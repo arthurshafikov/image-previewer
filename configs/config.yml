@@ -1,0 +1,2 @@
+AppConfig:
+  SizeOfLRUCache: 10
