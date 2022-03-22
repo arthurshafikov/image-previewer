@@ -1,2 +1,4 @@
 AppConfig:
   SizeOfLRUCache: 10
+ServerConfig:
+  Port: 8125

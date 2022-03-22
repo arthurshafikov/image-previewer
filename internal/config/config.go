@@ -8,10 +8,15 @@ import (
 
 type Config struct {
 	AppConfig
+	ServerConfig
 }
 
 type AppConfig struct {
 	SizeOfLRUCache int
+}
+
+type ServerConfig struct {
+	Port string
 }
 
 func NewConfig(configFolder string) *Config {
