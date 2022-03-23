@@ -1,8 +1,6 @@
 package handler
 
 import (
-	"net/http"
-
 	"github.com/gin-gonic/gin"
 	"github.com/thewolf27/image-previewer/internal/core"
 )
@@ -15,6 +13,17 @@ func (h *Handler) initResizeRoutes(e *gin.Engine) {
 }
 
 func (h *Handler) resize(ctx *gin.Context) {
-	h.services.Resizer.Resize(core.ResizeInput{})
-	ctx.JSON(http.StatusOK, "")
+	err := h.services.Resizer.ResizeFromUrl(
+		"https://cdn.pixabay.com/photo/2015/04/23/22/00/tree-736885__480.jpg",
+		core.ResizeInput{
+			Width:  100,
+			Height: 100,
+		},
+	)
+	if err != nil {
+		h.setUnprocessableEntityJSONResponse(ctx, err.Error())
+		return
+	}
+
+	h.setOkJSONResponse(ctx)
 }
