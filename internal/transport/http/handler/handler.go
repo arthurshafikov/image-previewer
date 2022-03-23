@@ -4,17 +4,21 @@ import (
 	"context"
 
 	"github.com/gin-gonic/gin"
+	"github.com/thewolf27/image-previewer/internal/services"
 )
 
 type Handler struct {
-	ctx context.Context
+	ctx      context.Context
+	services *services.Services
 }
 
 func NewHandler(
 	ctx context.Context,
+	services *services.Services,
 ) *Handler {
 	return &Handler{
-		ctx: ctx,
+		ctx:      ctx,
+		services: services,
 	}
 }
 
