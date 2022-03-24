@@ -9,6 +9,7 @@ import (
 type Config struct {
 	AppConfig
 	ServerConfig
+	StorageConfig
 }
 
 type AppConfig struct {
@@ -19,7 +20,11 @@ type ServerConfig struct {
 	Port string
 }
 
-func NewConfig(configFolder string) *Config {
+type StorageConfig struct {
+	StorageFolder string
+}
+
+func NewConfig(configFolder, storageFolder string) *Config {
 	viper.SetConfigType("yml")
 	viper.AddConfigPath(configFolder)
 	if err := viper.ReadInConfig(); err != nil {
@@ -30,6 +35,8 @@ func NewConfig(configFolder string) *Config {
 	if err := viper.Unmarshal(&config); err != nil {
 		log.Fatalln(err)
 	}
+
+	config.StorageConfig.StorageFolder = storageFolder
 
 	return &config
 }

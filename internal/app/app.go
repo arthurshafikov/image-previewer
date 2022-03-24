@@ -13,20 +13,24 @@ import (
 )
 
 var (
-	configFolder string
+	configFolder  string
+	storageFolder string
 )
 
 func init() {
 	flag.StringVar(&configFolder, "configFolder", "./configs", "Path to the config folder")
+	flag.StringVar(&storageFolder, "storageFolder", "./storage", "Path to the storage folder")
 }
 
 func Run() {
 	ctx, cancel := signal.NotifyContext(context.Background(), syscall.SIGINT, syscall.SIGTERM, syscall.SIGHUP)
 	defer cancel()
 
-	config := config.NewConfig(configFolder)
+	config := config.NewConfig(configFolder, storageFolder)
 
-	services := services.NewServices()
+	services := services.NewServices(services.Deps{
+		Config: config,
+	})
 	handler := handler.NewHandler(ctx, services)
 	server := server.NewServer(handler)
 

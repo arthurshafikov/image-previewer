@@ -1,6 +1,9 @@
 package core
 
-import "fmt"
+import (
+	"fmt"
+	"os"
+)
 
 type ResizeInput struct {
 	Width  uint
@@ -10,6 +13,7 @@ type ResizeInput struct {
 type Image struct {
 	Name      string
 	Extension string
+	File      *os.File
 }
 
 func (i *Image) GetFullName() string {
