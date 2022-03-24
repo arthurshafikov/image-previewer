@@ -27,8 +27,8 @@ func NewResizerService(storageFolder string) *ResizerService {
 	}
 }
 
-func (rs *ResizerService) ResizeFromUrl(url string, inp core.ResizeInput) error {
-	image, err := rs.downloadAndSaveImageFromUrl(url)
+func (rs *ResizerService) ResizeFromUrl(inp core.ResizeInput) error {
+	image, err := rs.downloadFromUrlAndSaveImageToStorage(inp)
 	if err != nil {
 		return err
 	}
@@ -63,24 +63,40 @@ func (rs *ResizerService) ResizeFromUrl(url string, inp core.ResizeInput) error 
 	return nil
 }
 
-func (rs *ResizerService) downloadAndSaveImageFromUrl(url string) (*core.Image, error) {
-	image, err := rs.parseImageNameFromUrl(url)
+func (rs *ResizerService) downloadFromUrlAndSaveImageToStorage(inp core.ResizeInput) (*core.Image, error) {
+	image, err := rs.parseImageNameFromUrl(inp.ImageUrl)
 	if err != nil {
 		return nil, err
 	}
 
-	resp, err := http.Get(url)
+	body, err := rs.downloadImageFromUrl(inp.ImageUrl, inp.Header)
 	if err != nil {
 		return nil, err
 	}
-	defer resp.Body.Close()
+	defer body.Close()
 
-	image.File, err = rs.saveImageToStorage(image.GetFullName(), resp.Body)
+	image.File, err = rs.saveImageToStorage(image.GetFullName(), body)
 	if err != nil {
 		return nil, err
 	}
 
 	return image, nil
+}
+
+func (rs *ResizerService) downloadImageFromUrl(url string, header http.Header) (io.ReadCloser, error) {
+	req, err := http.NewRequest("GET", url, nil)
+	if err != nil {
+		return nil, err
+	}
+	req.Header = header
+
+	client := &http.Client{}
+	resp, err := client.Do(req)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp.Body, nil
 }
 
 func (rs *ResizerService) saveImageToStorage(imageName string, body io.ReadCloser) (*os.File, error) {

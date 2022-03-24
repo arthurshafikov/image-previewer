@@ -26,10 +26,11 @@ func (h *Handler) resize(ctx *gin.Context) {
 	imageUrl := ctx.Param("imageUrl")
 
 	err = h.services.Resizer.ResizeFromUrl(
-		imageUrl[1:], // avoid first slash
 		core.ResizeInput{
-			Width:  width,
-			Height: height,
+			Header:   ctx.Request.Header,
+			ImageUrl: imageUrl[1:], // avoid first slash
+			Width:    width,
+			Height:   height,
 		},
 	)
 	if err != nil {

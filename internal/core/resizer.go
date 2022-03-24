@@ -2,12 +2,15 @@ package core
 
 import (
 	"fmt"
+	"net/http"
 	"os"
 )
 
 type ResizeInput struct {
-	Width  uint
-	Height uint
+	Header   http.Header
+	ImageUrl string
+	Width    uint
+	Height   uint
 }
 
 type Image struct {

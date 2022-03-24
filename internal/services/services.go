@@ -6,7 +6,7 @@ import (
 )
 
 type Resizer interface {
-	ResizeFromUrl(url string, inp core.ResizeInput) error
+	ResizeFromUrl(inp core.ResizeInput) error
 }
 
 type Services struct {
