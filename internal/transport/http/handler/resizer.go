@@ -6,18 +6,30 @@ import (
 )
 
 func (h *Handler) initResizeRoutes(e *gin.Engine) {
-	resize := e.Group("/resize")
+	resize := e.Group("/resize/:width/:height/*imageUrl")
 	{
 		resize.POST("", h.resize)
 	}
 }
 
 func (h *Handler) resize(ctx *gin.Context) {
-	err := h.services.Resizer.ResizeFromUrl(
-		"https://cdn.pixabay.com/photo/2015/04/23/22/00/tree-736885__480.jpg",
+	width, err := h.parseUnsignedIntegerFromParam(ctx, "width")
+	if err != nil {
+		h.setUnprocessableEntityJSONResponse(ctx, err.Error())
+		return
+	}
+	height, err := h.parseUnsignedIntegerFromParam(ctx, "height")
+	if err != nil {
+		h.setUnprocessableEntityJSONResponse(ctx, err.Error())
+		return
+	}
+	imageUrl := ctx.Param("imageUrl")
+
+	err = h.services.Resizer.ResizeFromUrl(
+		imageUrl[1:], // avoid first slash
 		core.ResizeInput{
-			Width:  500,
-			Height: 100,
+			Width:  width,
+			Height: height,
 		},
 	)
 	if err != nil {
