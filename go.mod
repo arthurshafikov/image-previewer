@@ -2,7 +2,10 @@ module github.com/thewolf27/image-previewer
 
 go 1.17
 
-require github.com/spf13/viper v1.10.1
+require (
+	github.com/oliamb/cutter v0.2.2
+	github.com/spf13/viper v1.10.1
+)
 
 require (
 	github.com/gin-contrib/sse v0.1.0 // indirect
@@ -15,7 +18,6 @@ require (
 	github.com/mattn/go-isatty v0.0.14 // indirect
 	github.com/modern-go/concurrent v0.0.0-20180306012644-bacd9c7ef1dd // indirect
 	github.com/modern-go/reflect2 v1.0.2 // indirect
-	github.com/nfnt/resize v0.0.0-20180221191011-83c6a9932646 // indirect
 	github.com/ugorji/go/codec v1.1.7 // indirect
 	golang.org/x/crypto v0.0.0-20210817164053-32db794688a5 // indirect
 	google.golang.org/protobuf v1.27.1 // indirect

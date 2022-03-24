@@ -30,17 +30,17 @@ func (h *Handler) Init(e *gin.Engine) {
 	h.initResizeRoutes(e)
 }
 
-func (h *Handler) parseUnsignedIntegerFromParam(ctx *gin.Context, key string) (uint, error) {
+func (h *Handler) parseIntegerFromParam(ctx *gin.Context, key string) (int, error) {
 	param := ctx.Param(key)
 	if param == "" {
 		return 0, fmt.Errorf("the param %s is missing", key)
 	}
-	paramUint64, err := strconv.ParseUint(param, 10, 64)
+	paramInt, err := strconv.Atoi(param)
 	if err != nil {
 		return 0, err
 	}
 
-	return uint(paramUint64), err
+	return paramInt, err
 }
 
 func (h *Handler) setUnprocessableEntityJSONResponse(ctx *gin.Context, data string) {

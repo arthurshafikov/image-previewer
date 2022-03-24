@@ -8,7 +8,7 @@ import (
 	"os"
 	"strings"
 
-	"github.com/nfnt/resize"
+	"github.com/oliamb/cutter"
 	"github.com/thewolf27/image-previewer/internal/core"
 )
 
@@ -40,7 +40,14 @@ func (rs *ResizerService) ResizeFromUrl(inp core.ResizeInput) error {
 	}
 	image.File.Close()
 
-	resizedThumbnail := resize.Thumbnail(inp.Width, inp.Height, decodedImageFile, resize.Lanczos3)
+	resizedThumbnail, err := cutter.Crop(decodedImageFile, cutter.Config{
+		Width:  inp.Width,
+		Height: inp.Height,
+		Mode:   cutter.Centered,
+	})
+	if err != nil {
+		return err
+	}
 
 	resizedFile, err := os.Create(fmt.Sprintf(
 		"%s/%s/%s_%vx%v.%s",

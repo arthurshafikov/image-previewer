@@ -9,8 +9,8 @@ import (
 type ResizeInput struct {
 	Header   http.Header
 	ImageUrl string
-	Width    uint
-	Height   uint
+	Width    int
+	Height   int
 }
 
 type Image struct {

@@ -13,12 +13,12 @@ func (h *Handler) initResizeRoutes(e *gin.Engine) {
 }
 
 func (h *Handler) resize(ctx *gin.Context) {
-	width, err := h.parseUnsignedIntegerFromParam(ctx, "width")
+	width, err := h.parseIntegerFromParam(ctx, "width")
 	if err != nil {
 		h.setUnprocessableEntityJSONResponse(ctx, err.Error())
 		return
 	}
-	height, err := h.parseUnsignedIntegerFromParam(ctx, "height")
+	height, err := h.parseIntegerFromParam(ctx, "height")
 	if err != nil {
 		h.setUnprocessableEntityJSONResponse(ctx, err.Error())
 		return
