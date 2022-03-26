@@ -13,22 +13,26 @@ import (
 )
 
 const (
-	rawImagesFolderName     = "raw"
-	resizedImagesFolderName = "resized"
+	rawImagesFolderName     = "raw"     // todo remove
+	resizedImagesFolderName = "resized" // todo remove
 )
 
 type ResizerService struct {
 	storageFolder string
+	fileCache     FileCache
 }
 
-func NewResizerService(storageFolder string) *ResizerService {
+func NewResizerService(storageFolder string, fileCache FileCache) *ResizerService {
 	return &ResizerService{
 		storageFolder: storageFolder,
+		fileCache:     fileCache,
 	}
 }
 
 func (rs *ResizerService) ResizeFromUrl(inp core.ResizeInput) error {
-	image, err := rs.downloadFromUrlAndSaveImageToStorage(inp)
+	image, err := rs.fileCache.Remember(inp.ImageUrl, func() (*core.Image, error) {
+		return rs.downloadFromUrlAndSaveImageToStorage(inp)
+	})
 	if err != nil {
 		return err
 	}
@@ -49,7 +53,7 @@ func (rs *ResizerService) ResizeFromUrl(inp core.ResizeInput) error {
 		return err
 	}
 
-	resizedFile, err := os.Create(fmt.Sprintf(
+	resizedFile, err := os.Create(fmt.Sprintf( // todo create temp file
 		"%s/%s/%s_%vx%v.%s",
 		rs.storageFolder,
 		resizedImagesFolderName,

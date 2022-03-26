@@ -31,13 +31,16 @@ func NewCache(capacity int, imagesFolder string) *Cache {
 	}
 }
 
-func (c *Cache) Remember(key string, callback func() *core.Image) (*core.Image, error) {
+func (c *Cache) Remember(key string, callback func() (*core.Image, error)) (*core.Image, error) {
 	fromCache := c.get(key)
 	if fromCache != nil {
 		return fromCache, nil
 	}
 
-	image := callback()
+	image, err := callback()
+	if err != nil {
+		return nil, err
+	}
 	deletedImage, err := c.set(key, image)
 	if err != nil {
 		return nil, err

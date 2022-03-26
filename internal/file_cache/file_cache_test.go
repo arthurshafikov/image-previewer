@@ -140,14 +140,14 @@ func TestRemember(t *testing.T) {
 	}
 	require.NoError(t, imageFile.Close())
 
-	result, err := c.Remember(someImageUrl, func() *core.Image {
-		return image
+	result, err := c.Remember(someImageUrl, func() (*core.Image, error) {
+		return image, nil
 	})
 	require.Equal(t, image, result)
 	require.NoError(t, err)
 
-	result, err = c.Remember(someImageUrl2, func() *core.Image {
-		return someImage
+	result, err = c.Remember(someImageUrl2, func() (*core.Image, error) {
+		return someImage, nil
 	})
 	require.Equal(t, someImage, result)
 	require.NoError(t, err)
