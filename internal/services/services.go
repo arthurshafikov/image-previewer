@@ -1,12 +1,14 @@
 package services
 
 import (
+	"os"
+
 	"github.com/thewolf27/image-previewer/internal/config"
 	"github.com/thewolf27/image-previewer/internal/core"
 )
 
 type Resizer interface {
-	ResizeFromUrl(inp core.ResizeInput) error
+	ResizeFromUrl(inp core.ResizeInput) (*os.File, error)
 }
 
 type ImageCache interface {

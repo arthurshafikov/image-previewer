@@ -25,7 +25,7 @@ func (h *Handler) resize(ctx *gin.Context) {
 	}
 	imageUrl := ctx.Param("imageUrl")
 
-	err = h.services.Resizer.ResizeFromUrl(
+	file, err := h.services.Resizer.ResizeFromUrl(
 		core.ResizeInput{
 			Header:   ctx.Request.Header,
 			ImageUrl: imageUrl[1:], // avoid first slash
@@ -37,7 +37,6 @@ func (h *Handler) resize(ctx *gin.Context) {
 		h.setUnprocessableEntityJSONResponse(ctx, err.Error())
 		return
 	}
-	// todo download the resized image
 
-	h.setOkJSONResponse(ctx)
+	ctx.File(file.Name())
 }

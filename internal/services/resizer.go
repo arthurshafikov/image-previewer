@@ -29,7 +29,7 @@ func NewResizerService(storageFolder string, imageCache ImageCache) *ResizerServ
 	}
 }
 
-func (rs *ResizerService) ResizeFromUrl(inp core.ResizeInput) error {
+func (rs *ResizerService) ResizeFromUrl(inp core.ResizeInput) (*os.File, error) {
 	image, err := rs.imageCache.Remember(inp.ImageUrl, func() (*core.Image, error) {
 		image, err := rs.downloadFromUrlAndSaveImageToStorage(inp)
 		if err != nil {
@@ -46,7 +46,7 @@ func (rs *ResizerService) ResizeFromUrl(inp core.ResizeInput) error {
 		return image, nil
 	})
 	if err != nil {
-		return err
+		return nil, err
 	}
 
 	resizedThumbnail, err := cutter.Crop(image.DecodedImage, cutter.Config{
@@ -55,7 +55,7 @@ func (rs *ResizerService) ResizeFromUrl(inp core.ResizeInput) error {
 		Mode:   cutter.Centered,
 	})
 	if err != nil {
-		return err
+		return nil, err
 	}
 
 	resizedFile, err := os.Create(fmt.Sprintf( // todo create temp file
@@ -68,15 +68,15 @@ func (rs *ResizerService) ResizeFromUrl(inp core.ResizeInput) error {
 		image.Extension,
 	))
 	if err != nil {
-		return err
+		return nil, err
 	}
 	defer resizedFile.Close()
 
 	if err := jpeg.Encode(resizedFile, resizedThumbnail, nil); err != nil {
-		return err
+		return nil, err
 	}
 
-	return nil
+	return resizedFile, nil
 }
 
 func (rs *ResizerService) downloadFromUrlAndSaveImageToStorage(inp core.ResizeInput) (*core.Image, error) {
