@@ -1,4 +1,4 @@
-package file_cache
+package image_cache
 
 import (
 	"math/rand"
@@ -132,6 +132,7 @@ func TestRemember(t *testing.T) {
 
 	imageFile, err := os.Create("img.jpg")
 	require.NoError(t, err)
+	defer imageFile.Close()
 
 	image := &core.Image{
 		Name:      "img",

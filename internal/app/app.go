@@ -7,7 +7,7 @@ import (
 	"syscall"
 
 	"github.com/thewolf27/image-previewer/internal/config"
-	"github.com/thewolf27/image-previewer/internal/file_cache"
+	"github.com/thewolf27/image-previewer/internal/image_cache"
 	"github.com/thewolf27/image-previewer/internal/services"
 	server "github.com/thewolf27/image-previewer/internal/transport/http"
 	"github.com/thewolf27/image-previewer/internal/transport/http/handler"
@@ -29,10 +29,10 @@ func Run() {
 
 	config := config.NewConfig(configFolder, storageFolder)
 
-	fileCache := file_cache.NewCache(config.AppConfig.SizeOfLRUCache, storageFolder+"/raw") // todo remove raw
+	imageCache := image_cache.NewCache(config.AppConfig.SizeOfLRUCache, storageFolder+"/raw") // todo remove raw
 	services := services.NewServices(services.Deps{
-		Config:    config,
-		FileCache: fileCache,
+		Config:     config,
+		ImageCache: imageCache,
 	})
 	handler := handler.NewHandler(ctx, services)
 	server := server.NewServer(handler)

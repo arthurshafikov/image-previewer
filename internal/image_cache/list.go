@@ -1,4 +1,4 @@
-package file_cache
+package image_cache
 
 type List struct {
 	front *ListItem

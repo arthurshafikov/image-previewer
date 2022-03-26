@@ -19,20 +19,24 @@ const (
 
 type ResizerService struct {
 	storageFolder string
-	fileCache     FileCache
+	imageCache    ImageCache
 }
 
-func NewResizerService(storageFolder string, fileCache FileCache) *ResizerService {
+func NewResizerService(storageFolder string, imageCache ImageCache) *ResizerService {
 	return &ResizerService{
 		storageFolder: storageFolder,
-		fileCache:     fileCache,
+		imageCache:    imageCache,
 	}
 }
 
 func (rs *ResizerService) ResizeFromUrl(inp core.ResizeInput) error {
-	image, err := rs.fileCache.Remember(inp.ImageUrl, func() (*core.Image, error) {
+	image, err := rs.imageCache.Remember(inp.ImageUrl, func() (*core.Image, error) {
 		return rs.downloadFromUrlAndSaveImageToStorage(inp)
 	})
+	if err != nil {
+		return err
+	}
+	image.File, err = os.Open(image.File.Name())
 	if err != nil {
 		return err
 	}

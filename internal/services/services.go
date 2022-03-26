@@ -9,7 +9,7 @@ type Resizer interface {
 	ResizeFromUrl(inp core.ResizeInput) error
 }
 
-type FileCache interface {
+type ImageCache interface {
 	Remember(key string, callback func() (*core.Image, error)) (*core.Image, error)
 }
 
@@ -18,12 +18,12 @@ type Services struct {
 }
 
 type Deps struct {
-	Config    *config.Config
-	FileCache FileCache
+	Config     *config.Config
+	ImageCache ImageCache
 }
 
 func NewServices(deps Deps) *Services {
 	return &Services{
-		Resizer: NewResizerService(deps.Config.StorageConfig.StorageFolder, deps.FileCache),
+		Resizer: NewResizerService(deps.Config.StorageConfig.StorageFolder, deps.ImageCache),
 	}
 }
