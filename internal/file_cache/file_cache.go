@@ -3,57 +3,67 @@ package file_cache
 import (
 	"os"
 	"sync"
+
+	"github.com/thewolf27/image-previewer/internal/core"
 )
 
 type Cache struct {
-	mu       sync.Mutex
-	capacity int
-	queue    *List
-	items    listItems
+	mu           sync.Mutex
+	capacity     int
+	queue        *List
+	items        listItems
+	imagesFolder string
 }
 
 type listItems map[string]*ListItem
 
 type cachedImage struct {
-	url  string
-	file *os.File
+	url   string
+	image *core.Image
 }
 
-func NewCache(capacity int) *Cache {
+func NewCache(capacity int, imagesFolder string) *Cache {
 	return &Cache{
-		capacity: capacity,
-		queue:    NewList(),
-		items:    make(listItems, capacity),
+		capacity:     capacity,
+		queue:        NewList(),
+		items:        make(listItems, capacity),
+		imagesFolder: imagesFolder,
 	}
 }
 
-func (c *Cache) Remember(key string, callback func() *os.File) *os.File {
+func (c *Cache) Remember(key string, callback func() *core.Image) (*core.Image, error) {
 	fromCache := c.get(key)
 	if fromCache != nil {
-		return fromCache
+		return fromCache, nil
 	}
 
-	file := callback()
-	if ok := c.set(key, file); !ok {
-		return nil
+	image := callback()
+	deletedImage, err := c.set(key, image)
+	if err != nil {
+		return nil, err
+	}
+	if deletedImage != nil {
+		if err := os.Remove(c.imagesFolder + deletedImage.GetFullName()); err != nil {
+			return nil, err
+		}
 	}
 
-	return file
+	return image, nil
 }
 
-func (c *Cache) set(key string, file *os.File) bool {
+func (c *Cache) set(key string, image *core.Image) (deletedImage *core.Image, err error) {
 	c.mu.Lock()
 	defer c.mu.Unlock()
 
 	newItem := &cachedImage{
-		url:  key,
-		file: file,
+		url:   key,
+		image: image,
 	}
 	if _, ok := c.items[key]; ok { // item exists
 		c.items[key].Value = newItem
 		c.queue.MoveToFront(c.items[key])
 
-		return true
+		return nil, nil
 	}
 
 	listItem := c.queue.PushFront(newItem)
@@ -62,13 +72,13 @@ func (c *Cache) set(key string, file *os.File) bool {
 		lastElem := c.queue.Back()
 		c.queue.Remove(lastElem)
 		delete(c.items, lastElem.Value.(*cachedImage).url)
-		// todo remove item from disk
+		return lastElem.Value.(*cachedImage).image, nil
 	}
 
-	return false
+	return nil, nil
 }
 
-func (c *Cache) get(key string) *os.File {
+func (c *Cache) get(key string) *core.Image {
 	c.mu.Lock()
 	defer c.mu.Unlock()
 
@@ -78,7 +88,7 @@ func (c *Cache) get(key string) *os.File {
 	}
 	c.queue.MoveToFront(elem)
 
-	return elem.Value.(*cachedImage).file
+	return elem.Value.(*cachedImage).image
 }
 
 func (c *Cache) clear() {
