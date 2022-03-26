@@ -2,6 +2,7 @@ package core
 
 import (
 	"fmt"
+	"image"
 	"net/http"
 	"os"
 )
@@ -14,9 +15,10 @@ type ResizeInput struct {
 }
 
 type Image struct {
-	Name      string
-	Extension string
-	File      *os.File
+	Name         string
+	Extension    string
+	File         *os.File
+	DecodedImage image.Image
 }
 
 func (i *Image) GetFullName() string {

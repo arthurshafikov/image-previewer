@@ -31,24 +31,25 @@ func NewResizerService(storageFolder string, imageCache ImageCache) *ResizerServ
 
 func (rs *ResizerService) ResizeFromUrl(inp core.ResizeInput) error {
 	image, err := rs.imageCache.Remember(inp.ImageUrl, func() (*core.Image, error) {
-		return rs.downloadFromUrlAndSaveImageToStorage(inp)
+		image, err := rs.downloadFromUrlAndSaveImageToStorage(inp)
+		if err != nil {
+			return nil, err
+		}
+
+		image.File.Seek(0, 0) // to avoid bug
+		image.DecodedImage, err = jpeg.Decode(image.File)
+		if err != nil {
+			return nil, err
+		}
+		image.File.Close()
+
+		return image, nil
 	})
 	if err != nil {
 		return err
 	}
-	image.File, err = os.Open(image.File.Name())
-	if err != nil {
-		return err
-	}
 
-	image.File.Seek(0, 0) // to avoid bug
-	decodedImageFile, err := jpeg.Decode(image.File)
-	if err != nil {
-		return err
-	}
-	image.File.Close()
-
-	resizedThumbnail, err := cutter.Crop(decodedImageFile, cutter.Config{
+	resizedThumbnail, err := cutter.Crop(image.DecodedImage, cutter.Config{
 		Width:  inp.Width,
 		Height: inp.Height,
 		Mode:   cutter.Centered,
