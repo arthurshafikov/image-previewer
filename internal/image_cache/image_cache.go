@@ -46,7 +46,7 @@ func (c *Cache) Remember(key string, callback func() (*core.Image, error)) (*cor
 		return nil, err
 	}
 	if deletedImage != nil {
-		if err := os.Remove(c.imagesFolder + deletedImage.GetFullName()); err != nil {
+		if err := os.Remove(deletedImage.File.Name()); err != nil {
 			return nil, err
 		}
 	}
