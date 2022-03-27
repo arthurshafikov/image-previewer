@@ -87,10 +87,15 @@ func (is *ImagesService) parseImageNameFromUrl(url string) (*core.Image, error) 
 	if imageExtensionIndex == -1 {
 		return nil, core.ErrWrongUrl
 	}
+	imageExtension := fullImageName[imageExtensionIndex+1:]
+
+	if imageExtension != "jpg" && imageExtension != "jpeg" {
+		return nil, core.ErrOnlyJpg
+	}
 
 	return &core.Image{
-		Name:      fullImageName[:imageExtensionIndex-1],
-		Extension: fullImageName[imageExtensionIndex+1:],
+		Name:      fullImageName[:imageExtensionIndex],
+		Extension: imageExtension,
 	}, nil
 }
 
