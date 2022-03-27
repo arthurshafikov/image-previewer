@@ -13,7 +13,8 @@ type Config struct {
 }
 
 type AppConfig struct {
-	SizeOfLRUCache int
+	SizeOfLRUCacheForRawImages     int
+	SizeOfLRUCacheForResizedImages int
 }
 
 type ServerConfig struct {

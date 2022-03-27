@@ -1,4 +1,5 @@
 AppConfig:
-  SizeOfLRUCache: 10
+  SizeOfLRUCacheForRawImages: 10
+  SizeOfLRUCacheForResizedImages: 15
 ServerConfig:
   Port: 8125

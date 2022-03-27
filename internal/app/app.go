@@ -29,8 +29,8 @@ func Run() {
 
 	config := config.NewConfig(configFolder, storageFolder)
 
-	rawImageCache := image_cache.NewCache(config.AppConfig.SizeOfLRUCache, storageFolder+"/raw")
-	resizedImageCache := image_cache.NewCache(config.AppConfig.SizeOfLRUCache, storageFolder+"/resized")
+	rawImageCache := image_cache.NewCache(config.AppConfig.SizeOfLRUCacheForRawImages, storageFolder+"/raw")
+	resizedImageCache := image_cache.NewCache(config.AppConfig.SizeOfLRUCacheForResizedImages, storageFolder+"/resized")
 	services := services.NewServices(services.Deps{
 		Config:            config,
 		RawImageCache:     rawImageCache,
