@@ -20,12 +20,13 @@ type Services struct {
 }
 
 type Deps struct {
-	Config     *config.Config
-	ImageCache ImageCache
+	Config            *config.Config
+	RawImageCache     ImageCache
+	ResizedImageCache ImageCache
 }
 
 func NewServices(deps Deps) *Services {
 	return &Services{
-		Resizer: NewResizerService(deps.Config.StorageConfig.StorageFolder, deps.ImageCache),
+		Resizer: NewResizerService(deps.Config.StorageConfig.StorageFolder, deps.RawImageCache, deps.ResizedImageCache),
 	}
 }

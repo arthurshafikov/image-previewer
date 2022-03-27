@@ -13,71 +13,88 @@ import (
 )
 
 const (
-	rawImagesFolderName     = "raw"     // todo remove
-	resizedImagesFolderName = "resized" // todo remove
+	rawImagesFolderName     = "raw"
+	resizedImagesFolderName = "resized"
 )
 
 type ResizerService struct {
-	storageFolder string
-	imageCache    ImageCache
+	storageFolder     string
+	rawImageCache     ImageCache
+	resizedImageCache ImageCache
 }
 
-func NewResizerService(storageFolder string, imageCache ImageCache) *ResizerService {
+func NewResizerService(storageFolder string, rawImageCache ImageCache, resizedImageCache ImageCache) *ResizerService {
 	return &ResizerService{
-		storageFolder: storageFolder,
-		imageCache:    imageCache,
+		storageFolder:     storageFolder,
+		rawImageCache:     rawImageCache,
+		resizedImageCache: resizedImageCache,
 	}
 }
 
 func (rs *ResizerService) ResizeFromUrl(inp core.ResizeInput) (*os.File, error) {
-	image, err := rs.imageCache.Remember(inp.ImageUrl, func() (*core.Image, error) {
-		image, err := rs.downloadFromUrlAndSaveImageToStorage(inp)
-		if err != nil {
-			return nil, err
-		}
+	resizedImage, err := rs.resizedImageCache.Remember(
+		fmt.Sprintf("%s_%vx%v", inp.ImageUrl, inp.Width, inp.Height),
+		func() (*core.Image, error) {
+			image, err := rs.rawImageCache.Remember(inp.ImageUrl, func() (*core.Image, error) {
+				image, err := rs.downloadFromUrlAndSaveImageToStorage(inp)
+				if err != nil {
+					return nil, err
+				}
 
-		image.File.Seek(0, 0) // to avoid bug
-		image.DecodedImage, err = jpeg.Decode(image.File)
-		if err != nil {
-			return nil, err
-		}
-		image.File.Close()
+				image.File.Seek(0, 0) // to avoid bug
+				image.DecodedImage, err = jpeg.Decode(image.File)
+				if err != nil {
+					return nil, err
+				}
+				image.File.Close()
 
-		return image, nil
-	})
+				return image, nil
+			})
+			if err != nil {
+				return nil, err
+			}
+
+			resizedThumbnail, err := cutter.Crop(image.DecodedImage, cutter.Config{
+				Width:  inp.Width,
+				Height: inp.Height,
+				Mode:   cutter.Centered,
+			})
+			if err != nil {
+				return nil, err
+			}
+
+			resizedFile, err := os.Create(fmt.Sprintf(
+				"%s/%s/%s_%vx%v.%s",
+				rs.storageFolder,
+				resizedImagesFolderName,
+				image.Name,
+				inp.Width,
+				inp.Height,
+				image.Extension,
+			))
+			if err != nil {
+				return nil, err
+			}
+			defer resizedFile.Close()
+
+			if err := jpeg.Encode(resizedFile, resizedThumbnail, nil); err != nil {
+				return nil, err
+			}
+
+			return &core.Image{
+				File:         resizedFile,
+				DecodedImage: resizedThumbnail,
+			}, nil
+		},
+	)
 	if err != nil {
 		return nil, err
 	}
 
-	resizedThumbnail, err := cutter.Crop(image.DecodedImage, cutter.Config{
-		Width:  inp.Width,
-		Height: inp.Height,
-		Mode:   cutter.Centered,
-	})
-	if err != nil {
-		return nil, err
-	}
-
-	resizedFile, err := os.Create(fmt.Sprintf( // todo create temp file
-		"%s/%s/%s_%vx%v.%s",
-		rs.storageFolder,
-		resizedImagesFolderName,
-		image.Name,
-		inp.Width,
-		inp.Height,
-		image.Extension,
-	))
-	if err != nil {
-		return nil, err
-	}
-	defer resizedFile.Close()
-
-	if err := jpeg.Encode(resizedFile, resizedThumbnail, nil); err != nil {
-		return nil, err
-	}
-
-	return resizedFile, nil
+	return resizedImage.File, nil
 }
+
+// todo func saveInRawFolder....
 
 func (rs *ResizerService) downloadFromUrlAndSaveImageToStorage(inp core.ResizeInput) (*core.Image, error) {
 	image, err := rs.parseImageNameFromUrl(inp.ImageUrl)

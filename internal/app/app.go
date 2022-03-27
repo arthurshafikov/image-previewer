@@ -29,10 +29,12 @@ func Run() {
 
 	config := config.NewConfig(configFolder, storageFolder)
 
-	imageCache := image_cache.NewCache(config.AppConfig.SizeOfLRUCache, storageFolder+"/raw") // todo remove raw
+	rawImageCache := image_cache.NewCache(config.AppConfig.SizeOfLRUCache, storageFolder+"/raw")
+	resizedImageCache := image_cache.NewCache(config.AppConfig.SizeOfLRUCache, storageFolder+"/resized")
 	services := services.NewServices(services.Deps{
-		Config:     config,
-		ImageCache: imageCache,
+		Config:            config,
+		RawImageCache:     rawImageCache,
+		ResizedImageCache: resizedImageCache,
 	})
 	handler := handler.NewHandler(ctx, services)
 	server := server.NewServer(handler)
