@@ -51,18 +51,11 @@ func (is *ImagesService) DownloadFromUrlAndSaveImageToStorage(inp core.DownloadI
 	return image, nil
 }
 
-func (is *ImagesService) SaveResizedImageToStorage(
-	resizedImage image.Image,
-	image *core.Image,
-	inp core.ResizeInput,
-) (*os.File, error) {
+func (is *ImagesService) SaveResizedImageToStorage(imageName string, resizedImage image.Image) (*os.File, error) {
 	resizedFile, err := os.Create(fmt.Sprintf(
-		"%s/%s_%vx%v.%s",
+		"%s/%s",
 		is.resizedImageCache.GetCachedImagesFolder(),
-		image.Name,
-		inp.Width,
-		inp.Height,
-		image.Extension,
+		imageName,
 	))
 	if err != nil {
 		return nil, err
@@ -73,7 +66,7 @@ func (is *ImagesService) SaveResizedImageToStorage(
 		return nil, err
 	}
 
-	return image.File, nil
+	return resizedFile, nil
 }
 
 func (is *ImagesService) parseImageNameFromUrl(url string) (*core.Image, error) {

@@ -22,3 +22,7 @@ type Image struct {
 func (i *Image) GetFullName() string {
 	return fmt.Sprintf("%s.%s", i.Name, i.Extension)
 }
+
+func (i *Image) GetFullNameWithWidthAndHeight(width, height int) string {
+	return fmt.Sprintf("%s_%vx%v.%s", i.Name, width, height, i.Extension)
+}

@@ -14,7 +14,7 @@ type Resizer interface {
 
 type Images interface {
 	DownloadFromUrlAndSaveImageToStorage(inp core.DownloadImageInput) (*core.Image, error)
-	SaveResizedImageToStorage(resizedImage image.Image, image *core.Image, inp core.ResizeInput) (*os.File, error)
+	SaveResizedImageToStorage(imageName string, resizedImage image.Image) (*os.File, error)
 }
 
 type ImageCache interface {

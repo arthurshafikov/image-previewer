@@ -49,7 +49,10 @@ func (rs *ResizerService) ResizeFromUrl(inp core.ResizeInput) (*os.File, error) 
 				return nil, err
 			}
 
-			resizedFile, err := rs.imagesService.SaveResizedImageToStorage(resizedThumbnail, image, inp)
+			resizedFile, err := rs.imagesService.SaveResizedImageToStorage(
+				image.GetFullNameWithWidthAndHeight(inp.Width, inp.Height),
+				resizedThumbnail,
+			)
 			if err != nil {
 				return nil, err
 			}
