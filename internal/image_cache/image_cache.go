@@ -8,11 +8,11 @@ import (
 )
 
 type Cache struct {
-	mu           sync.Mutex
-	capacity     int
-	queue        *List
-	items        listItems
-	imagesFolder string
+	mu                 sync.Mutex
+	capacity           int
+	queue              *List
+	items              listItems
+	cachedImagesFolder string
 }
 
 type listItems map[string]*ListItem
@@ -22,13 +22,17 @@ type cachedImage struct {
 	image *core.Image
 }
 
-func NewCache(capacity int, imagesFolder string) *Cache {
+func NewCache(capacity int, cachedImagesFolder string) *Cache {
 	return &Cache{
-		capacity:     capacity,
-		queue:        NewList(),
-		items:        make(listItems, capacity),
-		imagesFolder: imagesFolder,
+		capacity:           capacity,
+		queue:              NewList(),
+		items:              make(listItems, capacity),
+		cachedImagesFolder: cachedImagesFolder,
 	}
+}
+
+func (c *Cache) GetCachedImagesFolder() string {
+	return c.cachedImagesFolder
 }
 
 func (c *Cache) Remember(key string, callback func() (*core.Image, error)) (*core.Image, error) {

@@ -13,6 +13,7 @@ type Resizer interface {
 
 type ImageCache interface {
 	Remember(key string, callback func() (*core.Image, error)) (*core.Image, error)
+	GetCachedImagesFolder() string
 }
 
 type Services struct {
@@ -27,6 +28,6 @@ type Deps struct {
 
 func NewServices(deps Deps) *Services {
 	return &Services{
-		Resizer: NewResizerService(deps.Config.StorageConfig.StorageFolder, deps.RawImageCache, deps.ResizedImageCache),
+		Resizer: NewResizerService(deps.RawImageCache, deps.ResizedImageCache),
 	}
 }

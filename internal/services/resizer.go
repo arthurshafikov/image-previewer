@@ -12,20 +12,13 @@ import (
 	"github.com/thewolf27/image-previewer/internal/core"
 )
 
-const (
-	rawImagesFolderName     = "raw"
-	resizedImagesFolderName = "resized"
-)
-
 type ResizerService struct {
-	storageFolder     string
 	rawImageCache     ImageCache
 	resizedImageCache ImageCache
 }
 
-func NewResizerService(storageFolder string, rawImageCache ImageCache, resizedImageCache ImageCache) *ResizerService {
+func NewResizerService(rawImageCache ImageCache, resizedImageCache ImageCache) *ResizerService {
 	return &ResizerService{
-		storageFolder:     storageFolder,
 		rawImageCache:     rawImageCache,
 		resizedImageCache: resizedImageCache,
 	}
@@ -36,19 +29,7 @@ func (rs *ResizerService) ResizeFromUrl(inp core.ResizeInput) (*os.File, error) 
 		fmt.Sprintf("%s_%vx%v", inp.ImageUrl, inp.Width, inp.Height),
 		func() (*core.Image, error) {
 			image, err := rs.rawImageCache.Remember(inp.ImageUrl, func() (*core.Image, error) {
-				image, err := rs.downloadFromUrlAndSaveImageToStorage(inp)
-				if err != nil {
-					return nil, err
-				}
-
-				image.File.Seek(0, 0) // to avoid bug
-				image.DecodedImage, err = jpeg.Decode(image.File)
-				if err != nil {
-					return nil, err
-				}
-				image.File.Close()
-
-				return image, nil
+				return rs.downloadFromUrlAndSaveImageToStorage(inp)
 			})
 			if err != nil {
 				return nil, err
@@ -64,9 +45,8 @@ func (rs *ResizerService) ResizeFromUrl(inp core.ResizeInput) (*os.File, error) 
 			}
 
 			resizedFile, err := os.Create(fmt.Sprintf(
-				"%s/%s/%s_%vx%v.%s",
-				rs.storageFolder,
-				resizedImagesFolderName,
+				"%s/%s_%vx%v.%s",
+				rs.resizedImageCache.GetCachedImagesFolder(),
 				image.Name,
 				inp.Width,
 				inp.Height,
@@ -94,8 +74,6 @@ func (rs *ResizerService) ResizeFromUrl(inp core.ResizeInput) (*os.File, error) 
 	return resizedImage.File, nil
 }
 
-// todo func saveInRawFolder....
-
 func (rs *ResizerService) downloadFromUrlAndSaveImageToStorage(inp core.ResizeInput) (*core.Image, error) {
 	image, err := rs.parseImageNameFromUrl(inp.ImageUrl)
 	if err != nil {
@@ -112,6 +90,13 @@ func (rs *ResizerService) downloadFromUrlAndSaveImageToStorage(inp core.ResizeIn
 	if err != nil {
 		return nil, err
 	}
+
+	image.File.Seek(0, 0) // to avoid bug
+	image.DecodedImage, err = jpeg.Decode(image.File)
+	if err != nil {
+		return nil, err
+	}
+	image.File.Close()
 
 	return image, nil
 }
@@ -134,9 +119,8 @@ func (rs *ResizerService) downloadImageFromUrl(url string, header http.Header) (
 
 func (rs *ResizerService) saveImageToStorage(imageName string, body io.ReadCloser) (*os.File, error) {
 	rawImageFile, err := os.Create(fmt.Sprintf(
-		"%s/%s/%s",
-		rs.storageFolder,
-		rawImagesFolderName,
+		"%s/%s",
+		rs.rawImageCache.GetCachedImagesFolder(),
 		imageName,
 	))
 	if err != nil {
