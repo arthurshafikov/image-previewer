@@ -38,5 +38,6 @@ func (h *Handler) resize(ctx *gin.Context) {
 		return
 	}
 
+	ctx.Status(200)
 	ctx.File(file.Name())
 }
