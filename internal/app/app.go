@@ -24,6 +24,8 @@ func init() {
 }
 
 func Run() {
+	flag.Parse()
+
 	ctx, cancel := signal.NotifyContext(context.Background(), syscall.SIGINT, syscall.SIGTERM, syscall.SIGHUP)
 	defer cancel()
 
