@@ -30,18 +30,17 @@ func (is *ImagesService) DownloadFromUrlAndSaveImageToStorage(inp core.DownloadI
 		return nil, err
 	}
 
-	body, err := is.downloadImageFromUrl(inp.Url, inp.Header)
+	body, err := is.downloadImageFromUrl(inp)
 	if err != nil {
 		return nil, err
 	}
 	defer body.Close()
 
-	image.File, err = is.saveImageToStorage(image.GetFullName(), body)
+	image.File, err = is.saveRawImageToStorage(image.GetFullName(), body)
 	if err != nil {
 		return nil, err
 	}
 
-	image.File.Seek(0, 0) // to avoid bug
 	image.DecodedImage, err = jpeg.Decode(image.File)
 	if err != nil {
 		return nil, err
@@ -92,12 +91,12 @@ func (is *ImagesService) parseImageNameFromUrl(url string) (*core.Image, error) 
 	}, nil
 }
 
-func (is *ImagesService) downloadImageFromUrl(url string, header http.Header) (io.ReadCloser, error) {
-	req, err := http.NewRequest("GET", url, nil)
+func (is *ImagesService) downloadImageFromUrl(inp core.DownloadImageInput) (io.ReadCloser, error) {
+	req, err := http.NewRequest("GET", inp.Url, nil)
 	if err != nil {
 		return nil, err
 	}
-	req.Header = header
+	req.Header = inp.Header
 
 	client := &http.Client{}
 	resp, err := client.Do(req)
@@ -108,7 +107,7 @@ func (is *ImagesService) downloadImageFromUrl(url string, header http.Header) (i
 	return resp.Body, nil
 }
 
-func (is *ImagesService) saveImageToStorage(imageName string, body io.ReadCloser) (*os.File, error) {
+func (is *ImagesService) saveRawImageToStorage(imageName string, body io.ReadCloser) (*os.File, error) {
 	rawImageFile, err := os.Create(fmt.Sprintf(
 		"%s/%s",
 		is.rawImageCache.GetCachedImagesFolder(),
@@ -121,6 +120,7 @@ func (is *ImagesService) saveImageToStorage(imageName string, body io.ReadCloser
 	if _, err = io.Copy(rawImageFile, body); err != nil {
 		return nil, err
 	}
+	rawImageFile.Seek(0, 0) // to avoid bug
 
 	return rawImageFile, nil
 }
