@@ -1,6 +1,7 @@
 package services
 
 import (
+	"errors"
 	"fmt"
 	"image"
 	"image/jpeg"
@@ -102,6 +103,9 @@ func (is *ImagesService) downloadImageFromUrl(inp core.DownloadImageInput) (io.R
 	resp, err := client.Do(req)
 	if err != nil {
 		return nil, err
+	}
+	if resp.StatusCode != http.StatusOK {
+		return nil, errors.New("remote host has returned: " + resp.Status)
 	}
 
 	return resp.Body, nil
