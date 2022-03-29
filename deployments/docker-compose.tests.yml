@@ -1,0 +1,19 @@
+version: '3'
+
+services:
+  integration-app:
+    build:
+      context: ../.
+      dockerfile: ./build/tests/app/Dockerfile
+    networks:
+      - integration
+  remote_nginx:
+    build:
+      context: ../.
+      dockerfile: ./build/tests/nginx/Dockerfile
+    networks:
+      - integration
+
+networks:
+  integration:
+    driver: bridge
