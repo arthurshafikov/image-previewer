@@ -15,21 +15,22 @@ import (
 type Server struct {
 	httpSrv *http.Server
 	handler *handler.Handler
+	Engine  *gin.Engine
 }
 
 func NewServer(handler *handler.Handler) *Server {
 	return &Server{
 		handler: handler,
+		Engine:  gin.Default(),
 	}
 }
 
 func (s *Server) Serve(ctx context.Context, port string) {
-	engine := gin.Default()
-	s.handler.Init(engine)
+	s.handler.Init(s.Engine)
 
 	s.httpSrv = &http.Server{
 		Addr:    fmt.Sprintf(":%s", port),
-		Handler: engine,
+		Handler: s.Engine,
 	}
 
 	go s.shutdownOnContextDone(ctx)
