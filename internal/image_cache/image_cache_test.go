@@ -35,11 +35,11 @@ func TestSimple(t *testing.T) {
 	c := NewCache(5, "")
 
 	deletedImage, err := c.set(someImageUrl, someImage)
-	require.Nil(t, deletedImage)
 	require.NoError(t, err)
+	require.Nil(t, deletedImage)
 	deletedImage, err = c.set(someImageUrl2, someImage2)
-	require.Nil(t, deletedImage)
 	require.NoError(t, err)
+	require.Nil(t, deletedImage)
 
 	require.Equal(t, someImage, c.get(someImageUrl))
 	require.Equal(t, someImage2, c.get(someImageUrl2))
@@ -49,14 +49,14 @@ func TestLowCapacity(t *testing.T) {
 	c := NewCache(1, "")
 
 	deletedImage, err := c.set(someImageUrl, someImage)
+	require.NoError(t, err)
 	require.Nil(t, deletedImage)
-	require.NoError(t, err)
 	deletedImage, err = c.set(someImageUrl2, someImage2)
+	require.NoError(t, err)
 	require.Equal(t, someImage, deletedImage)
-	require.NoError(t, err)
 	deletedImage, err = c.set(someImageUrl3, someImage3)
-	require.Equal(t, someImage2, deletedImage)
 	require.NoError(t, err)
+	require.Equal(t, someImage2, deletedImage)
 
 	require.Nil(t, c.get(someImageUrl))
 	require.Nil(t, c.get(someImageUrl2))
@@ -67,11 +67,11 @@ func TestClear(t *testing.T) {
 	c := NewCache(2, "")
 
 	deletedImage, err := c.set(someImageUrl, someImage)
-	require.Nil(t, deletedImage)
 	require.NoError(t, err)
+	require.Nil(t, deletedImage)
 	deletedImage, err = c.set(someImageUrl2, someImage2)
-	require.Nil(t, deletedImage)
 	require.NoError(t, err)
+	require.Nil(t, deletedImage)
 
 	c.Clear()
 
@@ -95,33 +95,33 @@ func TestPurgeOldElement(t *testing.T) {
 	c := NewCache(3, "")
 
 	deletedImage, err := c.set(someImageUrl, someImage)
-	require.Nil(t, deletedImage)
 	require.NoError(t, err)
+	require.Nil(t, deletedImage)
 	deletedImage, err = c.set(someImageUrl2, someImage2)
-	require.Nil(t, deletedImage)
 	require.NoError(t, err)
+	require.Nil(t, deletedImage)
 	deletedImage, err = c.set(someImageUrl3, someImage3)
-	require.Nil(t, deletedImage)
 	require.NoError(t, err)
+	require.Nil(t, deletedImage)
 
 	deletedImage, err = c.set(someImageUrl2, someImage2)
-	require.Nil(t, deletedImage)
 	require.NoError(t, err)
+	require.Nil(t, deletedImage)
 
 	c.get(someImageUrl2)
 	c.get(someImageUrl)
 
 	deletedImage, err = c.set(someImageUrl2, someImage2)
-	require.Nil(t, deletedImage)
 	require.NoError(t, err)
+	require.Nil(t, deletedImage)
 
 	deletedImage, err = c.set(someImageUrl2, someImage2)
-	require.Nil(t, deletedImage)
 	require.NoError(t, err)
+	require.Nil(t, deletedImage)
 
 	deletedImage, err = c.set(someImageUrl4, someImage4)
-	require.Equal(t, someImage3, deletedImage)
 	require.NoError(t, err)
+	require.Equal(t, someImage3, deletedImage)
 
 	result := c.get(someImageUrl3)
 	require.Nil(t, result)
@@ -165,7 +165,8 @@ func TestCacheMultithreading(t *testing.T) {
 	go func() {
 		defer wg.Done()
 		for i := 0; i < 1_000_000; i++ {
-			c.set(strconv.Itoa(i), someImage)
+			_, err := c.set(strconv.Itoa(i), someImage)
+			require.NoError(t, err)
 		}
 	}()
 

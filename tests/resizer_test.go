@@ -102,5 +102,5 @@ func (s *APITestSuite) TestResizedCheckThatCachedImageIsUsed() {
 	requestDurationResizedImageIsCached := endTime.Sub(startTime)
 
 	r.True(requestDurationNothingCached > requestDurationRawImageIsCached*5)
-	r.True(requestDurationNothingCached > requestDurationResizedImageIsCached*30)
+	r.True(requestDurationNothingCached > requestDurationResizedImageIsCached*10)
 }

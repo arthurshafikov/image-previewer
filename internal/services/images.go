@@ -124,7 +124,9 @@ func (is *ImagesService) saveRawImageToStorage(imageName string, body io.ReadClo
 	if _, err = io.Copy(rawImageFile, body); err != nil {
 		return nil, err
 	}
-	rawImageFile.Seek(0, 0) // to avoid bug
+	if _, err := rawImageFile.Seek(0, 0); err != nil { // to avoid bug
+		return nil, err
+	}
 
 	return rawImageFile, nil
 }
