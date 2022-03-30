@@ -58,6 +58,14 @@ func (c *Cache) Remember(key string, callback func() (*core.Image, error)) (*cor
 	return image, nil
 }
 
+func (c *Cache) Clear() {
+	c.mu.Lock()
+	defer c.mu.Unlock()
+
+	c.queue = NewList()
+	c.items = listItems{}
+}
+
 func (c *Cache) set(key string, image *core.Image) (deletedImage *core.Image, err error) {
 	c.mu.Lock()
 	defer c.mu.Unlock()
@@ -96,12 +104,4 @@ func (c *Cache) get(key string) *core.Image {
 	c.queue.MoveToFront(elem)
 
 	return elem.Value.(*cachedImage).image
-}
-
-func (c *Cache) clear() {
-	c.mu.Lock()
-	defer c.mu.Unlock()
-
-	c.queue = NewList()
-	c.items = listItems{}
 }

@@ -73,7 +73,7 @@ func TestClear(t *testing.T) {
 	require.Nil(t, deletedImage)
 	require.NoError(t, err)
 
-	c.clear()
+	c.Clear()
 
 	result := c.get(someImageUrl)
 	require.Nil(t, result)
