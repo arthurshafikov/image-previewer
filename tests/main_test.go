@@ -28,6 +28,9 @@ type APITestSuite struct {
 
 	ServerEngine *gin.Engine
 
+	rawImageCache     *image_cache.Cache
+	resizedImageCache *image_cache.Cache
+
 	ctx       context.Context
 	ctxCancel context.CancelFunc
 }
@@ -47,12 +50,12 @@ func (s *APITestSuite) SetupSuite() {
 
 	config := config.NewConfig("./configs", "./storage")
 
-	rawImageCache := image_cache.NewCache(config.AppConfig.SizeOfLRUCacheForRawImages, "./storage/raw")
-	resizedImageCache := image_cache.NewCache(config.AppConfig.SizeOfLRUCacheForResizedImages, "./storage/resized")
+	s.rawImageCache = image_cache.NewCache(config.AppConfig.SizeOfLRUCacheForRawImages, "./storage/raw")
+	s.resizedImageCache = image_cache.NewCache(config.AppConfig.SizeOfLRUCacheForResizedImages, "./storage/resized")
 	services := services.NewServices(services.Deps{
 		Config:            config,
-		RawImageCache:     rawImageCache,
-		ResizedImageCache: resizedImageCache,
+		RawImageCache:     s.rawImageCache,
+		ResizedImageCache: s.resizedImageCache,
 	})
 	handler := handler.NewHandler(s.ctx, services)
 	server := server.NewServer(handler)
@@ -67,6 +70,8 @@ func (s *APITestSuite) SetupTest() {
 }
 
 func (s *APITestSuite) TearDownTest() {
+	s.rawImageCache.Clear()
+	s.resizedImageCache.Clear()
 	r.NoError(os.RemoveAll("storage"))
 }
 
