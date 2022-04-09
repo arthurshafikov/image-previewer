@@ -1,8 +1,8 @@
 # Image Previewer
 
 [![Go Report Card](https://goreportcard.com/badge/github.com/thewolf27/image-previewer)](https://goreportcard.com/report/github.com/thewolf27/image-previewer)
-![Tests](https://github.com/thewolf27/image-previewer/actions/workflows/tests.yml/badge.svg)
-![License](https://img.shields.io/github/license/thewolf27/image-previewer)
+![Tests](https://github.com/arthurshafikov/image-previewer/actions/workflows/tests.yml/badge.svg)
+![License](https://img.shields.io/github/license/arthurshafikov/image-previewer)
 
 This is the pet-project that resizes images. It accepts *width*, *height*, and *image url* in query params.
 So query would look like this:
