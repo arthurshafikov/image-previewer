@@ -1,6 +1,6 @@
 package main
 
-import "github.com/thewolf27/image-previewer/internal/app"
+import "github.com/arthurshafikov/image-previewer/internal/app"
 
 func main() {
 	app.Run()

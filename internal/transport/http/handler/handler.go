@@ -6,9 +6,9 @@ import (
 	"net/http"
 	"strconv"
 
+	"github.com/arthurshafikov/image-previewer/internal/core"
+	"github.com/arthurshafikov/image-previewer/internal/services"
 	"github.com/gin-gonic/gin"
-	"github.com/thewolf27/image-previewer/internal/core"
-	"github.com/thewolf27/image-previewer/internal/services"
 )
 
 type Handler struct {

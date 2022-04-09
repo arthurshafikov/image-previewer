@@ -10,7 +10,7 @@ import (
 	"os"
 	"strings"
 
-	"github.com/thewolf27/image-previewer/internal/core"
+	"github.com/arthurshafikov/image-previewer/internal/core"
 )
 
 type ImagesService struct {

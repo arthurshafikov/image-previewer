@@ -1,4 +1,4 @@
-module github.com/thewolf27/image-previewer
+module github.com/arthurshafikov/image-previewer
 
 go 1.17
 

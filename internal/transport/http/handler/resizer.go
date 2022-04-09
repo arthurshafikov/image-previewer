@@ -1,8 +1,8 @@
 package handler
 
 import (
+	"github.com/arthurshafikov/image-previewer/internal/core"
 	"github.com/gin-gonic/gin"
-	"github.com/thewolf27/image-previewer/internal/core"
 )
 
 func (h *Handler) initResizeRoutes(e *gin.Engine) {

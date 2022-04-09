@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"os"
 
+	"github.com/arthurshafikov/image-previewer/internal/core"
 	"github.com/oliamb/cutter"
-	"github.com/thewolf27/image-previewer/internal/core"
 )
 
 type ResizerService struct {

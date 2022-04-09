@@ -10,7 +10,7 @@ import (
 	reflect "reflect"
 
 	gomock "github.com/golang/mock/gomock"
-	core "github.com/thewolf27/image-previewer/internal/core"
+	core "github.com/arthurshafikov/image-previewer/internal/core"
 )
 
 // MockResizer is a mock of Resizer interface.

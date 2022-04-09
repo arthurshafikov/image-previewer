@@ -8,12 +8,12 @@ import (
 	"os"
 	"testing"
 
+	"github.com/arthurshafikov/image-previewer/internal/core"
+	"github.com/arthurshafikov/image-previewer/internal/services"
+	mock_services "github.com/arthurshafikov/image-previewer/internal/services/mocks"
 	"github.com/gin-gonic/gin"
 	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/require"
-	"github.com/thewolf27/image-previewer/internal/core"
-	"github.com/thewolf27/image-previewer/internal/services"
-	mock_services "github.com/thewolf27/image-previewer/internal/services/mocks"
 )
 
 func TestResize(t *testing.T) {

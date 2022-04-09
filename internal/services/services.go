@@ -4,8 +4,8 @@ import (
 	"image"
 	"os"
 
-	"github.com/thewolf27/image-previewer/internal/config"
-	"github.com/thewolf27/image-previewer/internal/core"
+	"github.com/arthurshafikov/image-previewer/internal/config"
+	"github.com/arthurshafikov/image-previewer/internal/core"
 )
 
 type Resizer interface {

@@ -4,10 +4,10 @@ import (
 	"net/http"
 	"testing"
 
+	"github.com/arthurshafikov/image-previewer/internal/core"
+	mock_services "github.com/arthurshafikov/image-previewer/internal/services/mocks"
 	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/require"
-	"github.com/thewolf27/image-previewer/internal/core"
-	mock_services "github.com/thewolf27/image-previewer/internal/services/mocks"
 )
 
 func TestResizeFromUrl(t *testing.T) {

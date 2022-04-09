@@ -7,8 +7,8 @@ import (
 	"sync"
 	"testing"
 
+	"github.com/arthurshafikov/image-previewer/internal/core"
 	"github.com/stretchr/testify/require"
-	"github.com/thewolf27/image-previewer/internal/core"
 )
 
 var (

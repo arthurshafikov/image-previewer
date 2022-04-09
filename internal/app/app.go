@@ -6,11 +6,11 @@ import (
 	"os/signal"
 	"syscall"
 
-	"github.com/thewolf27/image-previewer/internal/config"
-	"github.com/thewolf27/image-previewer/internal/image_cache"
-	"github.com/thewolf27/image-previewer/internal/services"
-	server "github.com/thewolf27/image-previewer/internal/transport/http"
-	"github.com/thewolf27/image-previewer/internal/transport/http/handler"
+	"github.com/arthurshafikov/image-previewer/internal/config"
+	"github.com/arthurshafikov/image-previewer/internal/image_cache"
+	"github.com/arthurshafikov/image-previewer/internal/services"
+	server "github.com/arthurshafikov/image-previewer/internal/transport/http"
+	"github.com/arthurshafikov/image-previewer/internal/transport/http/handler"
 )
 
 var (

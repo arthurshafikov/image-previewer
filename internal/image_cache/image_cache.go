@@ -4,7 +4,7 @@ import (
 	"os"
 	"sync"
 
-	"github.com/thewolf27/image-previewer/internal/core"
+	"github.com/arthurshafikov/image-previewer/internal/core"
 )
 
 type Cache struct {
