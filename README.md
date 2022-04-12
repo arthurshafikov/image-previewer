@@ -1,6 +1,6 @@
 # Image Previewer
 
-[![Go Report Card](https://goreportcard.com/badge/github.com/thewolf27/image-previewer)](https://goreportcard.com/report/github.com/thewolf27/image-previewer)
+[![Go Report Card](https://goreportcard.com/badge/github.com/arthurshafikov/image-previewer)](https://goreportcard.com/report/github.com/arthurshafikov/image-previewer)
 ![Tests](https://github.com/arthurshafikov/image-previewer/actions/workflows/tests.yml/badge.svg)
 ![License](https://img.shields.io/github/license/arthurshafikov/image-previewer)
 
