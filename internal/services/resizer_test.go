@@ -10,7 +10,7 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func TestResizeFromUrl(t *testing.T) {
+func TestResizeFromURL(t *testing.T) {
 	ctl := gomock.NewController(t)
 	rawImageCacheMock := mock_services.NewMockImageCache(ctl)
 	resizedImageCacheMock := mock_services.NewMockImageCache(ctl)
@@ -27,8 +27,8 @@ func TestResizeFromUrl(t *testing.T) {
 			Return(coreImage, nil),
 	)
 
-	_, err := resizerService.ResizeFromUrl(core.ResizeInput{
-		ImageUrl: someImageUrl,
+	_, err := resizerService.ResizeFromURL(core.ResizeInput{
+		ImageURL: someImageURL,
 		Width:    200,
 		Height:   500,
 		Header:   http.Header{},

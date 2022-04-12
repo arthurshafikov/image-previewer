@@ -9,11 +9,11 @@ import (
 )
 
 type Resizer interface {
-	ResizeFromUrl(inp core.ResizeInput) (*os.File, error)
+	ResizeFromURL(inp core.ResizeInput) (*os.File, error)
 }
 
 type Images interface {
-	DownloadFromUrlAndSaveImageToStorage(inp core.DownloadImageInput) (*core.Image, error)
+	DownloadFromURLAndSaveImageToStorage(inp core.DownloadImageInput) (*core.Image, error)
 	SaveResizedImageToStorage(imageName string, resizedImage image.Image) (*os.File, error)
 }
 

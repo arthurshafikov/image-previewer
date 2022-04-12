@@ -6,7 +6,7 @@ import (
 )
 
 func (h *Handler) initResizeRoutes(e *gin.Engine) {
-	resize := e.Group("/resize/:width/:height/*imageUrl")
+	resize := e.Group("/resize/:width/:height/*imageURL")
 	{
 		resize.POST("", h.resize)
 	}
@@ -23,12 +23,12 @@ func (h *Handler) resize(ctx *gin.Context) {
 		h.setUnprocessableEntityJSONResponse(ctx, err.Error())
 		return
 	}
-	imageUrl := ctx.Param("imageUrl")
+	imageURL := ctx.Param("imageURL")
 
-	file, err := h.services.Resizer.ResizeFromUrl(
+	file, err := h.services.Resizer.ResizeFromURL(
 		core.ResizeInput{
 			Header:   ctx.Request.Header,
-			ImageUrl: imageUrl[1:], // avoid first slash
+			ImageURL: imageURL[1:], // avoid first slash
 			Width:    width,
 			Height:   height,
 		},

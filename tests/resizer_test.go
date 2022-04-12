@@ -13,27 +13,27 @@ func (s *APITestSuite) TestResizeRemoteHostNotExists() {
 }
 
 func (s *APITestSuite) TestResizeRemoteHostReturns404() {
-	statusCode, body := s.postRequest("/resize/200/100/" + remoteHostImageUrlNotExists)
+	statusCode, body := s.postRequest("/resize/200/100/" + remoteHostImageURLNotExists)
 	r.Equal(http.StatusUnprocessableEntity, statusCode)
 	r.Equal(error404Response, body)
 }
 
 func (s *APITestSuite) TestResizeRemoteHostReturnsExeFile() {
-	statusCode, body := s.postRequest("/resize/200/100/" + remoteHostImageUrlExeFile)
+	statusCode, body := s.postRequest("/resize/200/100/" + remoteHostImageURLExeFile)
 	r.Equal(http.StatusUnprocessableEntity, statusCode)
 	r.Equal(errorNotJpgJpegFileResponse, body)
 }
 
 func (s *APITestSuite) TestResizeAExceedNumberOfResizedImages() {
-	statusCode, _ := s.postRequest("/resize/300/200/" + remoteHostImage1Url)
+	statusCode, _ := s.postRequest("/resize/300/200/" + remoteHostImage1URL)
 	r.Equal(http.StatusOK, statusCode)
-	statusCode, _ = s.postRequest("/resize/200/200/" + remoteHostImage1Url)
+	statusCode, _ = s.postRequest("/resize/200/200/" + remoteHostImage1URL)
 	r.Equal(http.StatusOK, statusCode)
-	statusCode, _ = s.postRequest("/resize/100/200/" + remoteHostImage1Url)
+	statusCode, _ = s.postRequest("/resize/100/200/" + remoteHostImage1URL)
 	r.Equal(http.StatusOK, statusCode)
-	statusCode, _ = s.postRequest("/resize/50/200/" + remoteHostImage1Url)
+	statusCode, _ = s.postRequest("/resize/50/200/" + remoteHostImage1URL)
 	r.Equal(http.StatusOK, statusCode)
-	statusCode, _ = s.postRequest("/resize/50/100/" + remoteHostImage1Url)
+	statusCode, _ = s.postRequest("/resize/50/100/" + remoteHostImage1URL)
 	r.Equal(http.StatusOK, statusCode)
 
 	storageRawFolder, err := ioutil.ReadDir("./storage/raw")
@@ -56,11 +56,11 @@ func (s *APITestSuite) TestResizeAExceedNumberOfResizedImages() {
 }
 
 func (s *APITestSuite) TestResizeDefault() {
-	statusCode, _ := s.postRequest("/resize/300/200/" + remoteHostImage1Url)
+	statusCode, _ := s.postRequest("/resize/300/200/" + remoteHostImage1URL)
 	r.Equal(http.StatusOK, statusCode)
-	statusCode, _ = s.postRequest("/resize/500/200/" + remoteHostImage2Url)
+	statusCode, _ = s.postRequest("/resize/500/200/" + remoteHostImage2URL)
 	r.Equal(http.StatusOK, statusCode)
-	statusCode, _ = s.postRequest("/resize/100/100/" + remoteHostImage3Url)
+	statusCode, _ = s.postRequest("/resize/100/100/" + remoteHostImage3URL)
 	r.Equal(http.StatusOK, statusCode)
 
 	storageRawFolder, err := ioutil.ReadDir("./storage/raw")
@@ -84,19 +84,19 @@ func (s *APITestSuite) TestResizeDefault() {
 
 func (s *APITestSuite) TestResizedCheckThatCachedImageIsUsed() {
 	startTime := time.Now()
-	statusCode, _ := s.postRequest("/resize/300/200/" + remoteHostImage1Url)
+	statusCode, _ := s.postRequest("/resize/300/200/" + remoteHostImage1URL)
 	endTime := time.Now()
 	r.Equal(http.StatusOK, statusCode)
 	requestDurationNothingCached := endTime.Sub(startTime)
 
 	startTime = time.Now()
-	statusCode, _ = s.postRequest("/resize/500/100/" + remoteHostImage1Url)
+	statusCode, _ = s.postRequest("/resize/500/100/" + remoteHostImage1URL)
 	endTime = time.Now()
 	r.Equal(http.StatusOK, statusCode)
 	requestDurationRawImageIsCached := endTime.Sub(startTime)
 
 	startTime = time.Now()
-	statusCode, _ = s.postRequest("/resize/300/200/" + remoteHostImage1Url)
+	statusCode, _ = s.postRequest("/resize/300/200/" + remoteHostImage1URL)
 	endTime = time.Now()
 	r.Equal(http.StatusOK, statusCode)
 	requestDurationResizedImageIsCached := endTime.Sub(startTime)

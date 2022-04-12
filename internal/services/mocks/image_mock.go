@@ -1,12 +1,11 @@
-package mock_services
+package mock_services //nolint
 
 import (
 	image "image"
 	"image/color"
 )
 
-type ImageMock struct {
-}
+type ImageMock struct{}
 
 func NewImageMock() *ImageMock {
 	return &ImageMock{}

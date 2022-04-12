@@ -25,7 +25,7 @@ func TestResize(t *testing.T) {
 	w, c, h := getWriterContextAndHandler(t, services)
 	expectedInput := core.ResizeInput{
 		Header:   http.Header{"Someheaderkey": {"someHeaderValue"}},
-		ImageUrl: "https://some-website.com/some-image.jpg",
+		ImageURL: "https://some-website.com/some-image.jpg",
 		Width:    200,
 		Height:   500,
 	}
@@ -33,11 +33,11 @@ func TestResize(t *testing.T) {
 	require.NoError(t, err)
 	defer require.NoError(t, file.Close())
 	gomock.InOrder(
-		resizerServiceMock.EXPECT().ResizeFromUrl(expectedInput).Times(1).Return(file, nil),
+		resizerServiceMock.EXPECT().ResizeFromURL(expectedInput).Times(1).Return(file, nil),
 	)
 	c.Request = httptest.NewRequest(
 		http.MethodPost,
-		fmt.Sprintf("/resize/%v/%v/%s", expectedInput.Width, expectedInput.Height, expectedInput.ImageUrl),
+		fmt.Sprintf("/resize/%v/%v/%s", expectedInput.Width, expectedInput.Height, expectedInput.ImageURL),
 		nil,
 	)
 	c.Request.Header.Set("Someheaderkey", "someHeaderValue")
@@ -51,7 +51,7 @@ func TestResize(t *testing.T) {
 			Value: "500",
 		},
 		{
-			Key:   "imageUrl",
+			Key:   "imageURL",
 			Value: "/https://some-website.com/some-image.jpg",
 		},
 	}
@@ -66,7 +66,7 @@ func TestResizeMissingParams(t *testing.T) {
 	w, c, h := getWriterContextAndHandler(t, &services.Services{})
 	c.Request = httptest.NewRequest(
 		http.MethodPost,
-		fmt.Sprintf("/resize/%v/%v/%s", 200, 500, "someUrl"),
+		fmt.Sprintf("/resize/%v/%v/%s", 200, 500, "someURL"),
 		nil,
 	)
 	c.Params = []gin.Param{}
@@ -76,7 +76,10 @@ func TestResizeMissingParams(t *testing.T) {
 	require.Equal(t, http.StatusUnprocessableEntity, w.Code)
 }
 
-func getWriterContextAndHandler(t *testing.T, services *services.Services) (*httptest.ResponseRecorder, *gin.Context, *Handler) {
+func getWriterContextAndHandler(
+	t *testing.T,
+	services *services.Services,
+) (*httptest.ResponseRecorder, *gin.Context, *Handler) {
 	t.Helper()
 	gin.SetMode(gin.TestMode)
 	h := NewHandler(context.Background(), services)

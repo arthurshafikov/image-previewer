@@ -1,6 +1,7 @@
 package services
 
 import (
+	"context"
 	"errors"
 	"fmt"
 	"image"
@@ -25,13 +26,13 @@ func NewImagesService(rawImageCache ImageCache, resizedImageCache ImageCache) *I
 	}
 }
 
-func (is *ImagesService) DownloadFromUrlAndSaveImageToStorage(inp core.DownloadImageInput) (*core.Image, error) {
-	image, err := is.parseImageNameFromUrl(inp.Url)
+func (is *ImagesService) DownloadFromURLAndSaveImageToStorage(inp core.DownloadImageInput) (*core.Image, error) {
+	image, err := is.parseImageNameFromURL(inp.URL)
 	if err != nil {
 		return nil, err
 	}
 
-	body, err := is.downloadImageFromUrl(inp)
+	body, err := is.downloadImageFromURL(inp)
 	if err != nil {
 		return nil, err
 	}
@@ -69,16 +70,16 @@ func (is *ImagesService) SaveResizedImageToStorage(imageName string, resizedImag
 	return resizedFile, nil
 }
 
-func (is *ImagesService) parseImageNameFromUrl(url string) (*core.Image, error) {
+func (is *ImagesService) parseImageNameFromURL(url string) (*core.Image, error) {
 	imageNameIndex := strings.LastIndex(url, "/")
 	if imageNameIndex == -1 {
-		return nil, core.ErrWrongUrl
+		return nil, core.ErrWrongURL
 	}
 
 	fullImageName := url[imageNameIndex+1:]
 	imageExtensionIndex := strings.LastIndex(fullImageName, ".")
 	if imageExtensionIndex == -1 {
-		return nil, core.ErrWrongUrl
+		return nil, core.ErrWrongURL
 	}
 	imageExtension := fullImageName[imageExtensionIndex+1:]
 
@@ -92,8 +93,8 @@ func (is *ImagesService) parseImageNameFromUrl(url string) (*core.Image, error) 
 	}, nil
 }
 
-func (is *ImagesService) downloadImageFromUrl(inp core.DownloadImageInput) (io.ReadCloser, error) {
-	req, err := http.NewRequest("GET", inp.Url, nil)
+func (is *ImagesService) downloadImageFromURL(inp core.DownloadImageInput) (io.ReadCloser, error) {
+	req, err := http.NewRequestWithContext(context.Background(), "GET", inp.URL, nil)
 	if err != nil {
 		return nil, err
 	}

@@ -19,9 +19,7 @@ import (
 	"github.com/stretchr/testify/suite"
 )
 
-var (
-	r *require.Assertions
-)
+var r *require.Assertions
 
 type APITestSuite struct {
 	suite.Suite

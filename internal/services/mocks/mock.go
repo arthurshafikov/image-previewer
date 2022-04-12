@@ -36,19 +36,19 @@ func (m *MockResizer) EXPECT() *MockResizerMockRecorder {
 	return m.recorder
 }
 
-// ResizeFromUrl mocks base method.
-func (m *MockResizer) ResizeFromUrl(inp core.ResizeInput) (*os.File, error) {
+// ResizeFromURL mocks base method.
+func (m *MockResizer) ResizeFromURL(inp core.ResizeInput) (*os.File, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "ResizeFromUrl", inp)
+	ret := m.ctrl.Call(m, "ResizeFromURL", inp)
 	ret0, _ := ret[0].(*os.File)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-// ResizeFromUrl indicates an expected call of ResizeFromUrl.
-func (mr *MockResizerMockRecorder) ResizeFromUrl(inp interface{}) *gomock.Call {
+// ResizeFromURL indicates an expected call of ResizeFromURL.
+func (mr *MockResizerMockRecorder) ResizeFromURL(inp interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ResizeFromUrl", reflect.TypeOf((*MockResizer)(nil).ResizeFromUrl), inp)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ResizeFromURL", reflect.TypeOf((*MockResizer)(nil).ResizeFromURL), inp)
 }
 
 // MockImages is a mock of Images interface.
@@ -74,19 +74,19 @@ func (m *MockImages) EXPECT() *MockImagesMockRecorder {
 	return m.recorder
 }
 
-// DownloadFromUrlAndSaveImageToStorage mocks base method.
-func (m *MockImages) DownloadFromUrlAndSaveImageToStorage(inp core.DownloadImageInput) (*core.Image, error) {
+// DownloadFromURLAndSaveImageToStorage mocks base method.
+func (m *MockImages) DownloadFromURLAndSaveImageToStorage(inp core.DownloadImageInput) (*core.Image, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "DownloadFromUrlAndSaveImageToStorage", inp)
+	ret := m.ctrl.Call(m, "DownloadFromURLAndSaveImageToStorage", inp)
 	ret0, _ := ret[0].(*core.Image)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-// DownloadFromUrlAndSaveImageToStorage indicates an expected call of DownloadFromUrlAndSaveImageToStorage.
-func (mr *MockImagesMockRecorder) DownloadFromUrlAndSaveImageToStorage(inp interface{}) *gomock.Call {
+// DownloadFromURLAndSaveImageToStorage indicates an expected call of DownloadFromURLAndSaveImageToStorage.
+func (mr *MockImagesMockRecorder) DownloadFromURLAndSaveImageToStorage(inp interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DownloadFromUrlAndSaveImageToStorage", reflect.TypeOf((*MockImages)(nil).DownloadFromUrlAndSaveImageToStorage), inp)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DownloadFromURLAndSaveImageToStorage", reflect.TypeOf((*MockImages)(nil).DownloadFromURLAndSaveImageToStorage), inp)
 }
 
 // SaveResizedImageToStorage mocks base method.

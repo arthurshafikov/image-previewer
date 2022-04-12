@@ -1,4 +1,4 @@
-package image_cache
+package image_cache //nolint
 
 import (
 	"os"
@@ -36,8 +36,7 @@ func (c *Cache) GetCachedImagesFolder() string {
 }
 
 func (c *Cache) Remember(key string, callback func() (*core.Image, error)) (*core.Image, error) {
-	fromCache := c.get(key)
-	if fromCache != nil {
+	if fromCache := c.get(key); fromCache != nil {
 		return fromCache, nil
 	}
 

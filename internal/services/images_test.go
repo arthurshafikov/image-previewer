@@ -16,7 +16,7 @@ import (
 )
 
 var (
-	someImageUrl = "https://some-url.com/some-image.jpg"
+	someImageURL = "https://some-url.com/some-image.jpg"
 	coreImage    = &core.Image{
 		Name:      "some-image",
 		Extension: "jpg",
@@ -33,19 +33,19 @@ func getImageService(t *testing.T) (*ImagesService, *mock_services.MockImageCach
 	return NewImagesService(rawImageCacheMock, resizedImageCacheMock), rawImageCacheMock, resizedImageCacheMock
 }
 
-func TestDownloadImageFromUrl(t *testing.T) {
+func TestDownloadImageFromURL(t *testing.T) {
 	httpmock.Activate()
 	defer httpmock.DeactivateAndReset()
 	imagesService, _, _ := getImageService(t)
 
 	httpmock.RegisterResponder(
 		"GET",
-		someImageUrl,
+		someImageURL,
 		httpmock.NewStringResponder(200, "123"),
 	)
 
-	resultBody, err := imagesService.downloadImageFromUrl(core.DownloadImageInput{
-		Url:    someImageUrl,
+	resultBody, err := imagesService.downloadImageFromURL(core.DownloadImageInput{
+		URL:    someImageURL,
 		Header: http.Header{},
 	})
 	require.NoError(t, err)
@@ -56,31 +56,31 @@ func TestDownloadImageFromUrl(t *testing.T) {
 	require.Equal(t, "123", string(result))
 }
 
-func TestParseImageNameFromUrl(t *testing.T) {
+func TestParseImageNameFromURL(t *testing.T) {
 	imagesService, _, _ := getImageService(t)
 
-	image, err := imagesService.parseImageNameFromUrl(someImageUrl)
+	image, err := imagesService.parseImageNameFromURL(someImageURL)
 	require.NoError(t, err)
 	require.Equal(t, coreImage, image)
 }
 
-func TestParseImageNameFromUrlNotAnImage(t *testing.T) {
+func TestParseImageNameFromURLNotAnImage(t *testing.T) {
 	imagesService, _, _ := getImageService(t)
 
-	someNotImageUrl := "https://some-url.com/some.exe"
+	someNotImageURL := "https://some-url.com/some.exe"
 
-	image, err := imagesService.parseImageNameFromUrl(someNotImageUrl)
+	image, err := imagesService.parseImageNameFromURL(someNotImageURL)
 	require.ErrorIs(t, core.ErrOnlyJpg, err)
 	require.Nil(t, image)
 }
 
-func TestParseImageNameFromUrlWrongUrl(t *testing.T) {
+func TestParseImageNameFromURLWrongURL(t *testing.T) {
 	imagesService, _, _ := getImageService(t)
 
-	someNotImageUrl := "https://some-url.com/somePosts/2"
+	someNotImageURL := "https://some-url.com/somePosts/2"
 
-	image, err := imagesService.parseImageNameFromUrl(someNotImageUrl)
-	require.ErrorIs(t, core.ErrWrongUrl, err)
+	image, err := imagesService.parseImageNameFromURL(someNotImageURL)
+	require.ErrorIs(t, core.ErrWrongURL, err)
 	require.Nil(t, image)
 }
 

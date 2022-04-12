@@ -1,4 +1,4 @@
-package image_cache
+package image_cache //nolint
 
 import (
 	"testing"

@@ -26,13 +26,13 @@ func NewResizerService(
 	}
 }
 
-func (rs *ResizerService) ResizeFromUrl(inp core.ResizeInput) (*os.File, error) {
+func (rs *ResizerService) ResizeFromURL(inp core.ResizeInput) (*os.File, error) {
 	resizedImage, err := rs.resizedImageCache.Remember(
-		fmt.Sprintf("%s_%vx%v", inp.ImageUrl, inp.Width, inp.Height),
+		fmt.Sprintf("%s_%vx%v", inp.ImageURL, inp.Width, inp.Height),
 		func() (*core.Image, error) {
-			image, err := rs.rawImageCache.Remember(inp.ImageUrl, func() (*core.Image, error) {
-				return rs.imagesService.DownloadFromUrlAndSaveImageToStorage(core.DownloadImageInput{
-					Url:    inp.ImageUrl,
+			image, err := rs.rawImageCache.Remember(inp.ImageURL, func() (*core.Image, error) {
+				return rs.imagesService.DownloadFromURLAndSaveImageToStorage(core.DownloadImageInput{
+					URL:    inp.ImageURL,
 					Header: inp.Header,
 				})
 			})

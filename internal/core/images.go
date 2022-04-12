@@ -8,7 +8,7 @@ import (
 )
 
 type DownloadImageInput struct {
-	Url    string
+	URL    string
 	Header http.Header
 }
 
