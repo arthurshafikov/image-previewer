@@ -71,3 +71,11 @@ Down all the integration test containers (for reset cache)
 ```
 make reset-integration-tests
 ```
+
+---
+## Linters
+
+Run linters (you have to have golangci-lint installed on your PC)
+```
+make lint
+```
