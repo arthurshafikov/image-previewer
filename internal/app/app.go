@@ -3,6 +3,7 @@ package app
 import (
 	"context"
 	"flag"
+	"log"
 	"os/signal"
 	"syscall"
 
@@ -11,6 +12,7 @@ import (
 	"github.com/arthurshafikov/image-previewer/internal/services"
 	server "github.com/arthurshafikov/image-previewer/internal/transport/http"
 	"github.com/arthurshafikov/image-previewer/internal/transport/http/handler"
+	"golang.org/x/sync/errgroup"
 )
 
 var (
@@ -27,6 +29,7 @@ func Run() {
 	flag.Parse()
 
 	ctx, cancel := signal.NotifyContext(context.Background(), syscall.SIGINT, syscall.SIGTERM, syscall.SIGHUP)
+	group, ctx := errgroup.WithContext(ctx)
 	defer cancel()
 
 	config := config.NewConfig(configFolder, storageFolder)
@@ -41,5 +44,9 @@ func Run() {
 	handler := handler.NewHandler(ctx, services)
 	server := server.NewServer(handler)
 
-	server.Serve(ctx, config.ServerConfig.Port)
+	server.Serve(ctx, group, config.ServerConfig.Port)
+
+	if err := group.Wait(); err != nil {
+		log.Println(err)
+	}
 }
