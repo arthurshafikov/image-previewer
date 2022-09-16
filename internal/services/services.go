@@ -22,6 +22,10 @@ type ImageCache interface {
 	GetCachedImagesFolder() string
 }
 
+type Logger interface {
+	Error(err error)
+}
+
 type Services struct {
 	Resizer
 }
@@ -30,12 +34,13 @@ type Deps struct {
 	Config            *config.Config
 	RawImageCache     ImageCache
 	ResizedImageCache ImageCache
+	Logger            Logger
 }
 
 func NewServices(deps Deps) *Services {
-	imagesService := NewImagesService(deps.RawImageCache, deps.ResizedImageCache)
+	imagesService := NewImagesService(deps.Logger, deps.RawImageCache, deps.ResizedImageCache)
 
 	return &Services{
-		Resizer: NewResizerService(deps.RawImageCache, deps.ResizedImageCache, imagesService),
+		Resizer: NewResizerService(deps.Logger, deps.RawImageCache, deps.ResizedImageCache, imagesService),
 	}
 }

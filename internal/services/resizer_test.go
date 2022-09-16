@@ -19,13 +19,26 @@ var input = core.ResizeInput{
 	Header:   http.Header{},
 }
 
-func TestResizeFromURL(t *testing.T) {
-	ctl := gomock.NewController(t)
-	rawImageCacheMock := mock_services.NewMockImageCache(ctl)
-	resizedImageCacheMock := mock_services.NewMockImageCache(ctl)
-	imagesServiceMock := mock_services.NewMockImages(ctl)
-	resizerService := NewResizerService(rawImageCacheMock, resizedImageCacheMock, imagesServiceMock)
+func getResizerService(t *testing.T) (
+	*ResizerService,
+	*mock_services.MockImageCache,
+	*mock_services.MockImageCache,
+	*mock_services.MockImages,
+) {
+	t.Helper()
 
+	ctrl := gomock.NewController(t)
+	rawImageCacheMock := mock_services.NewMockImageCache(ctrl)
+	resizedImageCacheMock := mock_services.NewMockImageCache(ctrl)
+	imagesServiceMock := mock_services.NewMockImages(ctrl)
+	loggerMock := mock_services.NewMockLogger(ctrl)
+	resizerService := NewResizerService(loggerMock, rawImageCacheMock, resizedImageCacheMock, imagesServiceMock)
+
+	return resizerService, rawImageCacheMock, resizedImageCacheMock, imagesServiceMock
+}
+
+func TestResizeFromURL(t *testing.T) {
+	resizerService, _, resizedImageCacheMock, _ := getResizerService(t)
 	gomock.InOrder(
 		resizedImageCacheMock.EXPECT().Remember(
 			"https://some-url.com/some-image.jpg_200x500",
@@ -38,11 +51,7 @@ func TestResizeFromURL(t *testing.T) {
 }
 
 func TestDownloadImageAndResize(t *testing.T) {
-	ctl := gomock.NewController(t)
-	rawImageCacheMock := mock_services.NewMockImageCache(ctl)
-	resizedImageCacheMock := mock_services.NewMockImageCache(ctl)
-	imagesServiceMock := mock_services.NewMockImages(ctl)
-	resizerService := NewResizerService(rawImageCacheMock, resizedImageCacheMock, imagesServiceMock)
+	resizerService, rawImageCacheMock, _, imagesServiceMock := getResizerService(t)
 	coreImage.DecodedImage = image.Black
 
 	gomock.InOrder(

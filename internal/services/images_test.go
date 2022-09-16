@@ -26,11 +26,12 @@ var (
 func getImageService(t *testing.T) (*ImagesService, *mock_services.MockImageCache, *mock_services.MockImageCache) {
 	t.Helper()
 
-	ctl := gomock.NewController(t)
-	rawImageCacheMock := mock_services.NewMockImageCache(ctl)
-	resizedImageCacheMock := mock_services.NewMockImageCache(ctl)
+	ctrl := gomock.NewController(t)
+	rawImageCacheMock := mock_services.NewMockImageCache(ctrl)
+	resizedImageCacheMock := mock_services.NewMockImageCache(ctrl)
+	loggerMock := mock_services.NewMockLogger(ctrl)
 
-	return NewImagesService(rawImageCacheMock, resizedImageCacheMock), rawImageCacheMock, resizedImageCacheMock
+	return NewImagesService(loggerMock, rawImageCacheMock, resizedImageCacheMock), rawImageCacheMock, resizedImageCacheMock
 }
 
 func TestDownloadImageFromURL(t *testing.T) {

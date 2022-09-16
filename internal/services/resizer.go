@@ -8,17 +8,20 @@ import (
 )
 
 type ResizerService struct {
+	logger            Logger
 	rawImageCache     ImageCache
 	resizedImageCache ImageCache
 	imagesService     Images
 }
 
 func NewResizerService(
+	logger Logger,
 	rawImageCache ImageCache,
 	resizedImageCache ImageCache,
 	imagesService Images,
 ) *ResizerService {
 	return &ResizerService{
+		logger:            logger,
 		rawImageCache:     rawImageCache,
 		resizedImageCache: resizedImageCache,
 		imagesService:     imagesService,
@@ -52,6 +55,8 @@ func (rs *ResizerService) downloadImageAndResize(inp core.ResizeInput) (*core.Im
 
 	resizedThumbnail, err := image.Crop(inp.Width, inp.Height)
 	if err != nil {
+		rs.logger.Error(fmt.Errorf("error while cropping raw image: %w", err))
+
 		return nil, err
 	}
 

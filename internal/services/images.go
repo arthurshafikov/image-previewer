@@ -15,12 +15,14 @@ import (
 )
 
 type ImagesService struct {
+	logger            Logger
 	rawImageCache     ImageCache
 	resizedImageCache ImageCache
 }
 
-func NewImagesService(rawImageCache ImageCache, resizedImageCache ImageCache) *ImagesService {
+func NewImagesService(logger Logger, rawImageCache ImageCache, resizedImageCache ImageCache) *ImagesService {
 	return &ImagesService{
+		logger:            logger,
 		rawImageCache:     rawImageCache,
 		resizedImageCache: resizedImageCache,
 	}
@@ -34,20 +36,30 @@ func (is *ImagesService) DownloadFromURLAndSaveImageToStorage(inp core.DownloadI
 
 	body, err := is.downloadImageFromURL(inp)
 	if err != nil {
-		return nil, err
+		is.logger.Error(fmt.Errorf("error while downloading image from url: %w", err))
+
+		return nil, core.ErrCouldntDownloadImage
 	}
 	defer body.Close()
 
 	image.File, err = is.saveRawImageToStorage(image.GetFullName(), body)
 	if err != nil {
-		return nil, err
+		is.logger.Error(fmt.Errorf("error while saving image to the storage %w", err))
+
+		return nil, core.ErrCouldntSaveImage
 	}
 
 	image.DecodedImage, err = jpeg.Decode(image.File)
 	if err != nil {
-		return nil, err
+		is.logger.Error(fmt.Errorf("error while decoding image file %w", err))
+
+		return nil, core.ErrCouldntDecodeImage
 	}
-	image.File.Close()
+	if err := image.File.Close(); err != nil {
+		is.logger.Error(fmt.Errorf("error while closing image file %w", err))
+
+		return nil, core.ErrServerError
+	}
 
 	return image, nil
 }
@@ -59,12 +71,16 @@ func (is *ImagesService) SaveResizedImageToStorage(imageName string, resizedImag
 		imageName,
 	))
 	if err != nil {
-		return nil, err
+		is.logger.Error(fmt.Errorf("error while creating os file %w", err))
+
+		return nil, core.ErrServerError
 	}
 	defer resizedFile.Close()
 
 	if err := jpeg.Encode(resizedFile, resizedImage, nil); err != nil {
-		return nil, err
+		is.logger.Error(fmt.Errorf("error while encoding resized file %w", err))
+
+		return nil, core.ErrServerError
 	}
 
 	return resizedFile, nil
