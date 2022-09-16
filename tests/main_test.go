@@ -11,6 +11,7 @@ import (
 
 	"github.com/arthurshafikov/image-previewer/internal/config"
 	"github.com/arthurshafikov/image-previewer/internal/image_cache"
+	"github.com/arthurshafikov/image-previewer/internal/logger"
 	"github.com/arthurshafikov/image-previewer/internal/services"
 	server "github.com/arthurshafikov/image-previewer/internal/transport/http"
 	"github.com/arthurshafikov/image-previewer/internal/transport/http/handler"
@@ -50,13 +51,15 @@ func (s *APITestSuite) SetupSuite() {
 
 	s.rawImageCache = image_cache.NewCache(config.AppConfig.SizeOfLRUCacheForRawImages, "./storage/raw")
 	s.resizedImageCache = image_cache.NewCache(config.AppConfig.SizeOfLRUCacheForResizedImages, "./storage/resized")
+	logger := logger.NewLogger()
 	services := services.NewServices(services.Deps{
+		Logger:            logger,
 		Config:            config,
 		RawImageCache:     s.rawImageCache,
 		ResizedImageCache: s.resizedImageCache,
 	})
 	handler := handler.NewHandler(s.ctx, services)
-	server := server.NewServer(handler)
+	server := server.NewServer(logger, handler)
 	s.ServerEngine = server.Engine
 
 	handler.Init(s.ServerEngine)

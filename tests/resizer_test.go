@@ -15,7 +15,7 @@ func (s *APITestSuite) TestResizeRemoteHostNotExists() {
 func (s *APITestSuite) TestResizeRemoteHostReturns404() {
 	statusCode, body := s.postRequest("/resize/200/100/" + remoteHostImageURLNotExists)
 	r.Equal(http.StatusUnprocessableEntity, statusCode)
-	r.Equal(error404Response, body)
+	r.Equal(errorHostNotFound, body)
 }
 
 func (s *APITestSuite) TestResizeRemoteHostReturnsExeFile() {
