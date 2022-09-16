@@ -22,3 +22,7 @@ func NewLogger() *Logger {
 func (l *Logger) Error(err error) {
 	l.logrus.Error(err)
 }
+
+func (l *Logger) Info(info string) {
+	l.logrus.Info(info)
+}

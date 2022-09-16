@@ -9,7 +9,10 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-var errSome = fmt.Errorf("some error")
+var (
+	errSome  = fmt.Errorf("some error")
+	someInfo = "some info"
+)
 
 func TestError(t *testing.T) {
 	result := wrapLogTest(t, func(logger *Logger) {
@@ -17,6 +20,14 @@ func TestError(t *testing.T) {
 	})
 
 	require.Contains(t, result, errSome.Error())
+}
+
+func TestInfo(t *testing.T) {
+	result := wrapLogTest(t, func(logger *Logger) {
+		logger.Info(someInfo)
+	})
+
+	require.Contains(t, result, someInfo)
 }
 
 func wrapLogTest(t *testing.T, callback func(logger *Logger)) string {
