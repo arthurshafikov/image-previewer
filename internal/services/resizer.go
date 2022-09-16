@@ -5,7 +5,6 @@ import (
 	"os"
 
 	"github.com/arthurshafikov/image-previewer/internal/core"
-	"github.com/oliamb/cutter"
 )
 
 type ResizerService struct {
@@ -40,11 +39,7 @@ func (rs *ResizerService) ResizeFromURL(inp core.ResizeInput) (*os.File, error) 
 				return nil, err
 			}
 
-			resizedThumbnail, err := cutter.Crop(image.DecodedImage, cutter.Config{
-				Width:  inp.Width,
-				Height: inp.Height,
-				Mode:   cutter.Centered,
-			})
+			resizedThumbnail, err := image.Crop(inp.Width, inp.Height)
 			if err != nil {
 				return nil, err
 			}

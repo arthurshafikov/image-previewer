@@ -5,6 +5,8 @@ import (
 	"image"
 	"net/http"
 	"os"
+
+	"github.com/oliamb/cutter"
 )
 
 type DownloadImageInput struct {
@@ -25,4 +27,12 @@ func (i *Image) GetFullName() string {
 
 func (i *Image) GetFullNameWithWidthAndHeight(width, height int) string {
 	return fmt.Sprintf("%s_%vx%v.%s", i.Name, width, height, i.Extension)
+}
+
+func (i *Image) Crop(width, height int) (image.Image, error) {
+	return cutter.Crop(i.DecodedImage, cutter.Config{
+		Width:  width,
+		Height: height,
+		Mode:   cutter.Centered,
+	})
 }
