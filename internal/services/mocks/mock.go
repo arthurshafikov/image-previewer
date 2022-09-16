@@ -9,8 +9,8 @@ import (
 	os "os"
 	reflect "reflect"
 
-	gomock "github.com/golang/mock/gomock"
 	core "github.com/arthurshafikov/image-previewer/internal/core"
+	gomock "github.com/golang/mock/gomock"
 )
 
 // MockResizer is a mock of Resizer interface.
@@ -154,4 +154,39 @@ func (m *MockImageCache) Remember(key string, callback func() (*core.Image, erro
 func (mr *MockImageCacheMockRecorder) Remember(key, callback interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Remember", reflect.TypeOf((*MockImageCache)(nil).Remember), key, callback)
+}
+
+// MockLogger is a mock of Logger interface.
+type MockLogger struct {
+	ctrl     *gomock.Controller
+	recorder *MockLoggerMockRecorder
+}
+
+// MockLoggerMockRecorder is the mock recorder for MockLogger.
+type MockLoggerMockRecorder struct {
+	mock *MockLogger
+}
+
+// NewMockLogger creates a new mock instance.
+func NewMockLogger(ctrl *gomock.Controller) *MockLogger {
+	mock := &MockLogger{ctrl: ctrl}
+	mock.recorder = &MockLoggerMockRecorder{mock}
+	return mock
+}
+
+// EXPECT returns an object that allows the caller to indicate expected use.
+func (m *MockLogger) EXPECT() *MockLoggerMockRecorder {
+	return m.recorder
+}
+
+// Error mocks base method.
+func (m *MockLogger) Error(err error) {
+	m.ctrl.T.Helper()
+	m.ctrl.Call(m, "Error", err)
+}
+
+// Error indicates an expected call of Error.
+func (mr *MockLoggerMockRecorder) Error(err interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Error", reflect.TypeOf((*MockLogger)(nil).Error), err)
 }

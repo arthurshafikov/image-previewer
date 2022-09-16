@@ -23,6 +23,7 @@ lint:
 
 mocks:
 	mockgen -source=./internal/services/services.go -destination ./internal/services/mocks/mock.go
+	mockgen -source=./internal/transport/http/server.go -destination ./internal/transport/http/mocks/mock.go
 
 up:
 	docker-compose -f ${DOCKER_COMPOSE_FILE} -p ${APP_NAME} up --build
@@ -31,7 +32,7 @@ down:
 	docker-compose -f ${DOCKER_COMPOSE_FILE} down --volumes
 
 integration-tests:
-	docker-compose -f ${DOCKER_COMPOSE_TEST_FILE} -p ${APP_TEST_NAME} up --build --abort-on-container-exit --exit-code-from integration-app
+	docker-compose -f ${DOCKER_COMPOSE_TEST_FILE} -p ${APP_TEST_NAME} up --build --abort-on-container-exit --exit-code-from integration-app --attach integration-app
 	docker-compose -f ${DOCKER_COMPOSE_TEST_FILE} -p ${APP_TEST_NAME} down --volumes
 
 reset-integration-tests:
