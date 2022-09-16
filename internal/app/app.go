@@ -3,7 +3,6 @@ package app
 import (
 	"context"
 	"flag"
-	"log"
 	"os/signal"
 	"syscall"
 
@@ -45,11 +44,11 @@ func Run() {
 		ResizedImageCache: resizedImageCache,
 	})
 	handler := handler.NewHandler(ctx, services)
-	server := server.NewServer(handler)
+	server := server.NewServer(logger, handler)
 
 	server.Serve(ctx, group, config.ServerConfig.Port)
 
 	if err := group.Wait(); err != nil {
-		log.Println(err)
+		logger.Error(err)
 	}
 }

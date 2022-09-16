@@ -4,7 +4,6 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"log"
 	"net/http"
 	"time"
 
@@ -16,14 +15,21 @@ type Handler interface {
 	Init(*gin.Engine)
 }
 
+type Logger interface {
+	Error(err error)
+	Info(msg string)
+}
+
 type Server struct {
+	logger  Logger
 	httpSrv *http.Server
 	handler Handler
 	Engine  *gin.Engine
 }
 
-func NewServer(handler Handler) *Server {
+func NewServer(logger Logger, handler Handler) *Server {
 	return &Server{
+		logger:  logger,
 		handler: handler,
 		Engine:  gin.Default(),
 	}
@@ -43,12 +49,12 @@ func (s *Server) Serve(ctx context.Context, g *errgroup.Group, port string) {
 	})
 
 	if err := s.httpSrv.ListenAndServe(); err != nil && !errors.Is(err, http.ErrServerClosed) {
-		log.Println("Could not start listener ", err)
+		s.logger.Error(fmt.Errorf("could not start listener: %w", err))
 	}
 }
 
 func (s *Server) shutdown() error {
-	log.Println("Shutdown Server ...")
+	s.logger.Info("Shutdown server...")
 
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
