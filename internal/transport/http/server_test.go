@@ -25,7 +25,7 @@ func TestServe(t *testing.T) {
 	group.Go(func() error {
 		defer cancel()
 
-		response, err := http.Get("http://localhost:9999") //nolint:noctx
+		response, err := http.Get("http://localhost:9999")
 		require.NoError(t, response.Body.Close())
 		require.NoError(t, err)
 

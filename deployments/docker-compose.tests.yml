@@ -7,7 +7,9 @@ services:
       dockerfile: ./build/tests/app/Dockerfile
     networks:
       - integration
-  remote_nginx:
+    depends_on:
+      - remote-nginx
+  remote-nginx:
     build:
       context: ../.
       dockerfile: ./build/tests/nginx/Dockerfile
