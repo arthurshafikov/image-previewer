@@ -1,6 +1,6 @@
 module github.com/arthurshafikov/image-previewer
 
-go 1.17
+go 1.18
 
 require (
 	github.com/jarcoal/httpmock v1.1.0

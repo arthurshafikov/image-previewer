@@ -1,4 +1,4 @@
-FROM golang:1.17.3 as build
+FROM golang:1.18 as build
 
 ENV CODE_DIR /go/src/
 ENV TEST_DIR ./tests
