@@ -6,6 +6,7 @@ require (
 	github.com/jarcoal/httpmock v1.1.0
 	github.com/oliamb/cutter v0.2.2
 	github.com/spf13/viper v1.10.1
+	golang.org/x/sync v0.0.0-20220907140024-f12130a52804
 )
 
 require (
@@ -23,7 +24,6 @@ require (
 	github.com/pmezard/go-difflib v1.0.0 // indirect
 	github.com/ugorji/go/codec v1.1.7 // indirect
 	golang.org/x/crypto v0.0.0-20210817164053-32db794688a5 // indirect
-	golang.org/x/sync v0.0.0-20220907140024-f12130a52804 // indirect
 	google.golang.org/protobuf v1.27.1 // indirect
 	gopkg.in/yaml.v3 v3.0.0-20210107192922-496545a6307b // indirect
 )
